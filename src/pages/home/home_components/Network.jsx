@@ -1,7 +1,85 @@
+import networkBg    from '../../../assets/images/network.png'
+import amazonLogo   from '../../../assets/images/amazon_logo.svg'
+import etsyLogo     from '../../../assets/images/etsy_logo.png'
+import tiktokLogo   from '../../../assets/images/tiktok_logo.svg'
+import shopifyLogo  from '../../../assets/images/shopify_logo.png'
+import './Network.css'
+
+const LOGOS = [
+  { src: amazonLogo,  alt: 'Amazon'  },
+  { src: etsyLogo,    alt: 'Etsy'    },
+  { src: tiktokLogo,  alt: 'TikTok'  },
+  { src: shopifyLogo, alt: 'Shopify' },
+]
+
+/* Triplicate so the strip is always wide enough to fill any screen */
+const TRACK = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS]
+
 function Network() {
   return (
-    <section>
-      Network
+    <section
+      id="network"
+      className="relative bg-[#0c0c0c] overflow-hidden
+                 h-[70vh] sm:h-[75vh] md:h-[80vh]"
+    >
+      {/* ── Background : network visualization ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+      >
+        <img
+          src={networkBg}
+          alt=""
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                     w-3/4 h-auto object-contain"
+          style={{ opacity: 0.78 }}
+        />
+      </div>
+
+      {/* ── Top content ── */}
+      <div className="relative z-10 pt-12 md:pt-16 flex flex-col items-center text-center px-4 gap-3">
+        {/* Badge */}
+        <span className="inline-block px-4 py-1 text-[10px] font-semibold tracking-[0.18em]
+                         text-white/90 uppercase border border-red-600/40 bg-red-950/25 rounded-full">
+          Your Success, Our Success
+        </span>
+
+        <h2
+          className="text-white font-semibold m-0"
+          style={{ fontSize: 'clamp(22px, 3vw, 40px)' }}
+        >
+          Secom Network
+        </h2>
+
+        <p
+          className="text-white/50 m-0 max-w-md"
+          style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
+        >
+          Pioneering global e-commerce, bringing Vietnamese brands to the world
+        </p>
+      </div>
+
+      {/* ── Infinite logo carousel — absolute so it sits ON the image ── */}
+      <div className="absolute bottom-8 md:bottom-10 left-0 right-0 z-10 overflow-hidden">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none"
+             style={{ background: 'linear-gradient(to right, #0c0c0c, transparent)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none"
+             style={{ background: 'linear-gradient(to left, #0c0c0c, transparent)' }} />
+
+        <div className="carousel-track gap-4">
+          {TRACK.map((logo, i) => (
+            <div key={i} className="logo-card">
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                className="logo-red h-7 w-auto object-contain select-none"
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }
