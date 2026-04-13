@@ -1,19 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Home from './pages/home/Home.jsx'
 import './App.css'
+import MainLayout from './pages/layouts/MainLayout.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      van khai
+    <Routes>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <Route element={<MainLayout />}  >
+
+        {/* Home - Landing Page */}
+        <Route path="/" element={<Home />} />
+
+
+        {/* Catch all routes: redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+
+      </Route>
+
+    </Routes>
   )
 }
 
