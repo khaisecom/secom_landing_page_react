@@ -218,12 +218,12 @@ function Hero() {
           </div>
 
           {/* Explore More */}
-          <div className="w-full flex items-center justify-center md:justify-end gap-3 mt-1 md:pr-2">
-            <span className="text-white/65 text-sm font-light tracking-wide">{t.hero.explore}</span>
+          <div className="w-full flex items-center justify-end gap-2 md:gap-3 mt-1 py-4 md:py-1 pr-2">
+            <span className="text-white/65 text-xs md:text-sm font-light tracking-wide">{t.hero.explore}</span>
             <button
               onClick={handleExplore}
               aria-label="Scroll to next section"
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0
                          border border-[#FF0137] bg-transparent cursor-pointer
                          transition-all duration-300 hover:translate-y-1 active:translate-y-1.5"
               style={{ boxShadow: '0 4px 18px rgba(255,1,55,0.45)' }}
