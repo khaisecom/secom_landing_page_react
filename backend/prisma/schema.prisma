@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model tbl_application_profile {
+  id               BigInt            @id @default(autoincrement())
+  application_date DateTime?         @db.DateTime(0)
+  cv_url           String?           @db.VarChar(255)
+  candidate_id     BigInt?
+  location         String?           @db.VarChar(255)
+  job_category_id  BigInt?
+  tbl_candidate    tbl_candidate?    @relation(fields: [candidate_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK3dlsnshmuceavj1elp5kufni4")
+  tbl_job_category tbl_job_category? @relation(fields: [job_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKh6njtf462nv200kx3pk1jay11")
+
+  @@index([candidate_id], map: "FK3dlsnshmuceavj1elp5kufni4")
+  @@index([job_category_id], map: "FKh6njtf462nv200kx3pk1jay11")
+}
+
+model tbl_candidate {
+  id                      BigInt                    @id @default(autoincrement())
+  created_at              DateTime?                 @db.DateTime(6)
+  created_by              String?                   @db.VarChar(255)
+  modified_at             DateTime?                 @db.DateTime(6)
+  modified_by             String?                   @db.VarChar(255)
+  email                   String?                   @db.VarChar(255)
+  full_name               String?                   @db.VarChar(255)
+  is_saved                Boolean?                  @db.Bit(1)
+  phone_number            String?                   @db.VarChar(255)
+  tbl_application_profile tbl_application_profile[]
+}
+
+model tbl_category {
+  id   BigInt  @id @default(autoincrement())
+  name String? @db.VarChar(255)
+}
+
+model tbl_contact {
+  id             BigInt    @id @default(autoincrement())
+  created_at     DateTime? @db.DateTime(6)
+  created_by     String?   @db.VarChar(255)
+  modified_at    DateTime? @db.DateTime(6)
+  modified_by    String?   @db.VarChar(255)
+  contact_method String?   @db.VarChar(255)
+  customer_name  String?   @db.VarChar(255)
+  email          String?   @db.VarChar(255)
+  is_completed   Boolean?  @db.Bit(1)
+  message        String?   @db.Text
+  company        String?   @db.VarChar(255)
+  status         String?   @db.VarChar(255)
+}
+
+model tbl_course {
+  id       BigInt  @id @default(autoincrement())
+  duration String? @db.VarChar(255)
+  name     String? @db.VarChar(255)
+}
+
+model tbl_job {
+  id                        BigInt                      @id @default(autoincrement())
+  created_at                DateTime?                   @db.DateTime(6)
+  created_by                String?                     @db.VarChar(255)
+  modified_at               DateTime?                   @db.DateTime(6)
+  modified_by               String?                     @db.VarChar(255)
+  deadline                  DateTime?                   @db.DateTime(6)
+  description               String?                     @db.Text
+  from_salary               Float?
+  is_active                 Boolean?                    @db.Bit(1)
+  locations                 String?                     @db.VarChar(255)
+  title                     String?                     @db.VarChar(255)
+  to_salary                 Float?
+  vacancies                 Int?
+  category_id               BigInt?
+  is_negotiable             Int?                        @db.TinyInt
+  title_en                  String?                     @db.VarChar(225)
+  description_en            String?                     @db.Text
+  tbl_job_category          tbl_job_category?           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKt9k17lqnt753663u1yf1chrvx")
+  tbl_job_attribute_mapping tbl_job_attribute_mapping[]
+
+  @@index([category_id], map: "FKt9k17lqnt753663u1yf1chrvx")
+}
+
+model tbl_job_attribute {
+  id                        BigInt                      @id @default(autoincrement())
+  is_default                Boolean?                    @db.Bit(1)
+  name                      String?                     @db.VarChar(255)
+  type                      String?                     @db.VarChar(255)
+  position                  Int?
+  search_key                String?                     @db.VarChar(255)
+  name_en                   String?                     @db.VarChar(255)
+  tbl_job_attribute_mapping tbl_job_attribute_mapping[]
+}
+
+model tbl_job_attribute_mapping {
+  job_id            BigInt
+  attribute_id      BigInt
+  tbl_job_attribute tbl_job_attribute @relation(fields: [attribute_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKd85g7y3w00i5bvjbb0exthwx9")
+  tbl_job           tbl_job           @relation(fields: [job_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKne03kxm4jpgxjd6181hahesn9")
+
+  @@id([job_id, attribute_id])
+  @@index([attribute_id], map: "FKd85g7y3w00i5bvjbb0exthwx9")
+}
+
+model tbl_job_category {
+  id                      BigInt                    @id @default(autoincrement())
+  is_active               Boolean?                  @db.Bit(1)
+  name                    String?                   @db.VarChar(255)
+  thumbnail               String?                   @db.VarChar(255)
+  name_en                 String?                   @db.VarChar(255)
+  tbl_application_profile tbl_application_profile[]
+  tbl_job                 tbl_job[]
+}
+
+model tbl_post {
+  id                BigInt             @id @default(autoincrement())
+  created_at        DateTime?          @db.DateTime(6)
+  created_by        String?            @db.VarChar(255)
+  modified_at       DateTime?          @db.DateTime(6)
+  modified_by       String?            @db.VarChar(255)
+  short_description String?            @db.VarChar(510)
+  slug              String?            @unique(map: "post_slug_unique") @db.VarChar(255)
+  thumbnail         String?            @db.VarChar(255)
+  title             String?            @db.VarChar(255)
+  views             Int?
+  post_category_id  BigInt?
+  active_on_home    Boolean?           @db.Bit(1)
+  html_desc         String?            @db.Text
+  podcast_url       String?            @db.VarChar(255)
+  type              String?            @db.VarChar(255)
+  event_date        DateTime?          @db.Date
+  article_link      String?            @db.VarChar(255)
+  news_website_name String?            @db.VarChar(255)
+  likes             Int?               @default(0)
+  tbl_post_category tbl_post_category? @relation(fields: [post_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK59u555l1rdj2adjmxswcsni84")
+  tbl_post_gallery  tbl_post_gallery[]
+
+  @@index([post_category_id], map: "FK59u555l1rdj2adjmxswcsni84")
+}
+
+model tbl_post_category {
+  id       BigInt     @id @default(autoincrement())
+  name     String     @unique(map: "unique_post_category_name") @db.VarChar(255)
+  slug     String     @unique(map: "unique_post_category_slug") @db.VarChar(255)
+  tbl_post tbl_post[]
+}
+
+model tbl_post_gallery {
+  id       BigInt    @id @default(autoincrement())
+  url      String?   @db.VarChar(255)
+  post_id  BigInt?
+  tbl_post tbl_post? @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKcfcp0kxrc5o71puh7omtejef4")
+
+  @@index([post_id], map: "FKcfcp0kxrc5o71puh7omtejef4")
+}
+
+model tbl_system_users {
+  id                   BigInt    @id @default(autoincrement())
+  created_at           DateTime? @db.DateTime(6)
+  created_by           String?   @db.VarChar(255)
+  modified_at          DateTime? @db.DateTime(6)
+  modified_by          String?   @db.VarChar(255)
+  company              String?   @db.VarChar(255)
+  email                String?   @db.VarChar(255)
+  expired_code_at      DateTime? @db.DateTime(6)
+  fullname             String?   @db.VarChar(255)
+  is_enabled           Boolean?  @db.Bit(1)
+  is_verified          Boolean?  @db.Bit(1)
+  password             String?   @db.VarChar(255)
+  phone                String?   @db.VarChar(255)
+  reset_password_token String?   @db.VarChar(255)
+  role                 String?   @db.VarChar(255)
+  verified_code        String?   @db.VarChar(255)
+}
