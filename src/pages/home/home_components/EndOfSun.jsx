@@ -24,7 +24,7 @@ function EndOfSun() {
           display: 'block',
           pointerEvents: 'none',
           userSelect: 'none',
-          opacity: 0.4
+          opacity: 0.6
         }}
       />
     </div>
