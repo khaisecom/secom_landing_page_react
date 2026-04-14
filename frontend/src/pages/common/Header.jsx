@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { logout } from '../../store/authSlice.js'
 import { useLanguage } from '../../i18n/LanguageContext'
 import secomLogo from '../../assets/images/secom_logo.png'
 import vietnamFlag from '../../assets/images/VietNam_flag.png'
@@ -25,12 +27,20 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const { lang, setLang, t } = useLanguage()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { user, loading } = useSelector((state) => state.auth)
 
   const currentLang = LANGUAGES.find(l => l.code === lang)
 
   const handleLangSelect = (code) => {
     setLang(code)
     setLangOpen(false)
+  }
+
+  const handleLogout = async () => {
+    await dispatch(logout())
+    navigate('/')
   }
 
   return (
@@ -68,6 +78,21 @@ function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          {/* Logout button */}
+          {!loading && user && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-red-600/20 hover:border-red-600/40 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span className="hidden md:inline">Logout</span>
+            </button>
+          )}
+
           {/* Language Selector */}
           <div className="relative">
             <button
