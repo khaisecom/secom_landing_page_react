@@ -1,4 +1,4 @@
-import secomLogo from '../../../assets/images/secom_logo.png'
+import secomLogo from '../../../assets/images/secom_text_bottom.png'
 
 function Logo_Bottom() {
   return (
@@ -7,10 +7,10 @@ function Logo_Bottom() {
         src={secomLogo}
         alt="SECOM"
         style={{
-          width: 'clamp(200px, 38vw, 680px)',
+          width: '60%',
           height: 'auto',
           display: 'block',
-          filter: 'grayscale(100%) brightness(0.3)',
+          filter: 'grayscale(100%) brightness(0.9)',
         }}
       />
     </div>
