@@ -3,3 +3,9 @@
 html, body {
   overflow-x: hidden;
 }
+
+/* ── Board of Directors orbit animation ── */
+@keyframes orbit-spin {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

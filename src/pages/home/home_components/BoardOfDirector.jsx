@@ -56,6 +56,15 @@ function Avatar({ img, name, title, large = false }) {
   )
 }
 
+/* ── Orbit rings config ─────────────────────────────────────── */
+const ORBITS = [
+  { size: 160, opacity: 0.12, duration: '30s', direction: 'normal' },
+  { size: 260, opacity: 0.08, duration: '45s', direction: 'reverse' },
+  { size: 340, opacity: 0.10, duration: '60s', direction: 'normal' },
+  { size: 440, opacity: 0.06, duration: '50s', direction: 'reverse' },
+  { size: 540, opacity: 0.04, duration: '70s', direction: 'normal' },
+]
+
 /* ── Desktop radial diagram ────────────────────────────────── */
 function Diagram({ t }) {
   return (
@@ -71,15 +80,36 @@ function Diagram({ t }) {
         }}
       />
 
-      {/* Orbit ring */}
-      <div
-        className="absolute border border-white/8 rounded-full pointer-events-none"
-        style={{
-          width: '340px', height: '340px',
-          top: '42%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
+      {/* Orbit rings — solar system style */}
+      {ORBITS.map((orbit, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: `${orbit.size}px`,
+            height: `${orbit.size}px`,
+            top: '42%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            border: `1px solid rgba(255, 255, 255, ${orbit.opacity})`,
+            animation: `orbit-spin ${orbit.duration} linear infinite ${orbit.direction}`,
+          }}
+        >
+          {/* Small dot on orbit */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: '4px',
+              height: '4px',
+              top: '-2px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: `rgba(255, 1, 55, ${orbit.opacity * 4})`,
+              boxShadow: `0 0 6px rgba(255, 1, 55, ${orbit.opacity * 3})`,
+            }}
+          />
+        </div>
+      ))}
 
       {/* CEO — center */}
       <div
