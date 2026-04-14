@@ -44,7 +44,7 @@ function Network() {
       </div>
 
       {/* ── Top content ── */}
-      <div className="relative z-20 pt- md:pt-6 flex flex-col items-center text-center px-4 gap-3">
+      <div className="relative z-20 pt-0 md:pt-6 flex flex-col items-center text-center px-4 gap-3">
         {/* Badge */}
         <span className="inline-block px-4 py-1 text-[10px] font-semibold tracking-[0.18em]
                          text-white/90 uppercase border border-red-600/40 bg-red-950/25 rounded-full">
