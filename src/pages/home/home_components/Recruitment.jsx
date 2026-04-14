@@ -45,17 +45,13 @@ function JobItem({ job, open, onToggle }) {
           {job.title}
         </span>
 
-        <div className="flex items-center gap-3 shrink-0 ml-4">
-          {/* Active red dot */}
-          {open && (
-            <div
-              className="w-3 h-3 rounded-full shrink-0"
-              style={{
-                background: '#FF0137',
-                boxShadow: '0 0 8px rgba(255,1,55,0.7)',
-              }}
-            />
-          )}
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ml-4 transition-all duration-300"
+          style={{
+            border: open ? '1px solid rgba(255,1,55,0.5)' : '1px solid rgba(255,255,255,0.15)',
+            background: open ? 'rgba(255,1,55,0.15)' : 'transparent',
+          }}
+        >
           <Chevron open={open} />
         </div>
       </button>
@@ -67,15 +63,9 @@ function JobItem({ job, open, onToggle }) {
       >
         <div className="px-5 pb-5 flex flex-col gap-1.5">
           {job.bullets.map((b, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <span
-                className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ background: '#FF0137' }}
-              />
-              <p className="text-white/55 m-0" style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}>
-                {b}
-              </p>
-            </div>
+            <p key={i} className="text-white/55 m-0" style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}>
+              {b}
+            </p>
           ))}
         </div>
       </div>
@@ -92,8 +82,40 @@ function Recruitment() {
   const toggle = (i) => setActiveIndex(prev => (prev === i ? null : i))
 
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20">
-      <div className="max-w-3xl mx-auto px-6 md:px-10">
+    <section className="relative bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
+      {/* Floating blur red dots */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: '300px', height: '300px',
+          top: '10%', left: '-5%',
+          background: 'radial-gradient(circle, rgba(255,1,55,0.18) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'float-dot-1 8s ease-in-out infinite',
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: '200px', height: '200px',
+          top: '50%', right: '-3%',
+          background: 'radial-gradient(circle, rgba(255,1,55,0.15) 0%, transparent 70%)',
+          filter: 'blur(50px)',
+          animation: 'float-dot-2 10s ease-in-out infinite',
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: '250px', height: '250px',
+          bottom: '5%', left: '30%',
+          background: 'radial-gradient(circle, rgba(255,1,55,0.12) 0%, transparent 70%)',
+          filter: 'blur(55px)',
+          animation: 'float-dot-3 12s ease-in-out infinite',
+        }}
+      />
+
+      <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-10">
 
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-10">
