@@ -142,7 +142,7 @@ function Hero() {
         aria-hidden="true"
       >
         <div className="hero-planet-wrap">
-          <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill' }} />
+          <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill', opacity: 0.6 }} />
         </div>
       </div>
 
@@ -155,7 +155,7 @@ function Hero() {
         {/* ── Top 40% : headline ── */}
         <div
           className="w-full flex flex-col items-center justify-center gap-4 md:gap-5
-                     pt-10 md:pt-0
+                     pt-10 md:pt-0 mb-10
                      flex-2"
         >
           <Badge>Explore Beyond Limits</Badge>
@@ -173,7 +173,7 @@ function Hero() {
           aria-hidden="true"
         >
           <div className="hero-planet-wrap">
-            <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill' }} />
+            <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill', opacity: 0.7 }} />
           </div>
         </div>
 
@@ -181,10 +181,12 @@ function Hero() {
         <div
           ref={statsRef}
           className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center
-                     gap-3 md:gap-4 pb-8 md:pb-6
+                     gap-3 md:gap-4 pb-8 md:pb-6 mt-10
                      flex-3"
         >
-          <Badge>Your Success, Our Success</Badge>
+          <div className="mt-6 mb-2">
+            <Badge>Your Success, Our Success</Badge>
+          </div>
 
           <h2
             className="text-white font-semibold m-0"

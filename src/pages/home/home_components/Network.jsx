@@ -60,11 +60,11 @@ function Network() {
       </div>
 
       {/* ── Infinite logo carousel — absolute so it sits ON the image ── */}
-      <div className="absolute bottom-8 md:bottom-10 left-0 right-0 z-10 overflow-hidden">
+      <div className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 w-3/4 z-10 overflow-hidden">
         {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none"
+        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 z-10 pointer-events-none"
              style={{ background: 'linear-gradient(to right, #0c0c0c, transparent)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none"
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 z-10 pointer-events-none"
              style={{ background: 'linear-gradient(to left, #0c0c0c, transparent)' }} />
 
         <div className="carousel-track gap-4">

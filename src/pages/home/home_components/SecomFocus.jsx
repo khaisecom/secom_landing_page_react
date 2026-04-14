@@ -87,7 +87,7 @@ function SecomFocus() {
         <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Giant Stories
+            Our Stories
           </span>
 
           <h2

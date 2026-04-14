@@ -65,7 +65,7 @@ function FeaturedProduct() {
           {/* Badge */}
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Giant Stories
+            Client Stories
           </span>
 
           <h2
