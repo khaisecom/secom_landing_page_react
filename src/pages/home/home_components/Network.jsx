@@ -22,7 +22,7 @@ function Network() {
     <section
       id="network"
       className="relative bg-[#0c0c0c] overflow-hidden
-                 h-[70vh] sm:h-[75vh] md:h-[80vh]"
+                 h-[50vh] sm:h-[65vh] md:h-[80vh]"
     >
       {/* ── Background : network visualization ── */}
       <div
@@ -33,7 +33,7 @@ function Network() {
           src={networkBg}
           alt=""
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                     w-3/4 h-auto object-contain"
+                     w-[140%] md:w-[130%] lg:w-3/4 h-auto object-contain"
           style={{
             opacity: 0.78,
             filter: 'brightness(2)',
@@ -67,24 +67,20 @@ function Network() {
       </div>
 
       {/* ── Infinite logo carousel — absolute so it sits ON the image ── */}
-      <div className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 w-3/4 z-10 overflow-hidden">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 z-10 pointer-events-none"
-             style={{ background: 'linear-gradient(to right, #0c0c0c, transparent)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 z-10 pointer-events-none"
-             style={{ background: 'linear-gradient(to left, #0c0c0c, transparent)' }} />
-
-        <div className="carousel-track gap-4">
+      <div className="absolute bottom-8 md:bottom-10 left-0 right-0 z-10 px-6 md:px-10 lg:px-[12.5%]">
+        <div className="overflow-hidden">
+          <div className="carousel-track gap-4">
           {TRACK.map((logo, i) => (
             <div key={i} className="logo-card">
               <img
                 src={logo.src}
                 alt={logo.alt}
-                className="logo-red h-7 w-auto object-contain select-none"
+                className="logo-red h-5 lg:h-7 w-auto object-contain select-none"
                 draggable={false}
               />
             </div>
           ))}
+          </div>
         </div>
       </div>
     </section>
