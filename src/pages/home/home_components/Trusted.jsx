@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
+import avatar1 from '../../../assets/images/fake_avatar/avatar_1.avif'
+import avatar2 from '../../../assets/images/fake_avatar/avatar_2.avif'
+import avatar3 from '../../../assets/images/fake_avatar/avatar_3.jpg'
+import avatar4 from '../../../assets/images/fake_avatar/avatar_4.avif'
+import avatar5 from '../../../assets/images/fake_avatar/avatar_5.avif'
 
 const TESTIMONIALS = [
-  { name: 'Michael Tanaka', company: 'ZWave Inc.', initials: 'MT' },
-  { name: 'Hana Sato', company: 'JTech Solutions', initials: 'HS' },
-  { name: 'Sophia Martinez', company: 'ALink Media', initials: 'SM' },
-  { name: 'James Chen', company: 'NovaBrand Co.', initials: 'JC' },
-  { name: 'Emily Nguyen', company: 'PureLeaf Organics', initials: 'EN' },
-]
-
-const AVATAR_COLORS = [
-  'linear-gradient(135deg, #FF0137 0%, #8b000f 100%)',
-  'linear-gradient(135deg, #c0003f 0%, #5a0020 100%)',
-  'linear-gradient(135deg, #ff4060 0%, #aa0030 100%)',
-  'linear-gradient(135deg, #e00030 0%, #700015 100%)',
-  'linear-gradient(135deg, #ff2050 0%, #900025 100%)',
+  { name: 'Michael Tanaka', company: 'ZWave Inc.', avatar: avatar1 },
+  { name: 'Hana Sato', company: 'JTech Solutions', avatar: avatar2 },
+  { name: 'Sophia Martinez', company: 'ALink Media', avatar: avatar3 },
+  { name: 'James Chen', company: 'NovaBrand Co.', avatar: avatar4 },
+  { name: 'Emily Nguyen', company: 'PureLeaf Organics', avatar: avatar5 },
 ]
 
 /* ── Single testimonial card ────────────────────────────────── */
@@ -37,16 +34,14 @@ function TestimonialCard({ t, idx, active }) {
         style={{ top: 0, left: '50%', transform: 'translate(-50%, 0)' }}
       >
         <div
-          className="w-20 h-20 rounded-full flex items-center justify-center
-                     text-white text-xl font-bold select-none shrink-0"
+          className="w-20 h-20 rounded-full overflow-hidden shrink-0"
           style={{
-            background: AVATAR_COLORS[idx % AVATAR_COLORS.length],
             boxShadow: isActive
               ? '0 0 0 3px rgba(255,255,255,0.85), 0 0 28px rgba(255,1,55,0.55)'
               : '0 0 0 2px rgba(255,255,255,0.25)',
           }}
         >
-          {t.initials}
+          <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
         </div>
       </div>
 
