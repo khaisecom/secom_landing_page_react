@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux'
 import { checkAuth } from './store/authSlice.js'
 import Home from './pages/home/Home.jsx'
 import Admin from './pages/admin/Admin.jsx'
+import RecruitmentPage from './pages/recruitment/Recruitment.jsx'
+import JobDetail from './pages/recruitment/JobDetail.jsx'
 import './App.css'
 import MainLayout from './pages/layouts/MainLayout.jsx'
 
@@ -21,6 +23,10 @@ function App() {
 
         {/* Home - Landing Page */}
         <Route path="/" element={<Home />} />
+
+        {/* Recruitment */}
+        <Route path="/recruitment" element={<RecruitmentPage />} />
+        <Route path="/recruitment/:id" element={<JobDetail />} />
 
         {/* Admin - Login / Register */}
         <Route path="/admin" element={<Admin />} />
