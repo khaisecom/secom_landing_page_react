@@ -121,6 +121,14 @@ function Header() {
 
       </div>
 
+      {/* Overlay to close mobile menu when clicking outside */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[-1] md:hidden"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
       {/* Mobile menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 bg-[#0e0e0e] border-t border-white/5 ${menuOpen ? 'max-h-96' : 'max-h-0'}`}
