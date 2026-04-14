@@ -210,7 +210,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
 
           {/* Tips modal */}
           {tipsOpen && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4" onClick={() => setTipsOpen(false)}>
+            <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60 px-4" onClick={() => setTipsOpen(false)}>
               <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                   <h4 className="text-sm font-bold flex items-center gap-2">
@@ -441,7 +441,7 @@ export default function RecruitmentPage() {
               : 'Thành lập năm 2017, SECOM theo đuổi sứ mệnh: Đan tặng hạnh phúc trong từng sản phẩm in ấn theo yêu cầu. Lấy sáng tạo làm cốt lõi, chất lượng làm kim chỉ nam, chúng tôi biến ý tưởng thành những thiết kế truyền cảm hứng. Dưới tầm nhìn "Mang thương hiệu Việt tỏa sáng toàn cầu", chúng tôi tiến bước với đam mê, tận tâm và niềm tin rằng những thiết kế sáng tạo để lại dấu ấn bền lâu.'}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:auto-rows-fr">
-            <div className="aspect-[4/3] md:aspect-auto rounded-lg overflow-hidden">
+            <div className="aspect-4/3 md:aspect-auto rounded-lg overflow-hidden">
               <iframe
                 className="w-full h-full"
                 src="https://www.youtube.com/embed/9hmSaD1_6hw?si=nEftRUyiyVbA28aU"
@@ -464,7 +464,7 @@ export default function RecruitmentPage() {
       </div>
 
       {/* Job listings section */}
-      <div className="py-8 md:py-16 px-4 bg-white/[0.02]">
+      <div className="py-8 md:py-16 px-4 bg-white/2">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold uppercase text-center mb-8 md:mb-12">
             {isEn ? 'Open Positions' : 'Vị trí đang tuyển dụng'}
