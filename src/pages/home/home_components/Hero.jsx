@@ -156,7 +156,7 @@ function Hero() {
         <div
           className="w-full flex flex-col items-center justify-center gap-4 md:gap-5
                      pt-10 md:pt-0
-                     flex-[2]"
+                     flex-2"
         >
           <Badge>Explore Beyond Limits</Badge>
           <h1
@@ -182,7 +182,7 @@ function Hero() {
           ref={statsRef}
           className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center
                      gap-3 md:gap-4 pb-8 md:pb-6
-                     flex-[3]"
+                     flex-3"
         >
           <Badge>Your Success, Our Success</Badge>
 
