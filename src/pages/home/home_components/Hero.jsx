@@ -181,7 +181,7 @@ function Hero() {
         <div
           ref={statsRef}
           className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center
-                     gap-3 md:gap-4 pb-8 md:pb-6 mt-10
+                     gap-3 md:gap-4 md:pb-6 mt-10
                      flex-3"
         >
           <div className="mt-6 mb-2">

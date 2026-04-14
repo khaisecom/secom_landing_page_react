@@ -32,12 +32,17 @@ function Network() {
           alt=""
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                      w-3/4 h-auto object-contain"
-          style={{ opacity: 0.78 }}
+          style={{
+            opacity: 0.78,
+            filter: 'brightness(2)',
+            mask: 'radial-gradient(ellipse 60% 50% at 50% 60%, rgba(0,0,0,1) 25%, transparent 90%)',
+            WebkitMask: 'radial-gradient(ellipse 60% 50% at 50% 60%, rgba(0,0,0,1) 25%, transparent 90%)',
+          }}
         />
       </div>
 
       {/* ── Top content ── */}
-      <div className="relative z-10 pt-12 md:pt-16 flex flex-col items-center text-center px-4 gap-3">
+      <div className="relative z-20 pt- md:pt-6 flex flex-col items-center text-center px-4 gap-3">
         {/* Badge */}
         <span className="inline-block px-4 py-1 text-[10px] font-semibold tracking-[0.18em]
                          text-white/90 uppercase border border-red-600/40 bg-red-950/25 rounded-full">
