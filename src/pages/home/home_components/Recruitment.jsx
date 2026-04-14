@@ -1,47 +1,5 @@
 import { useState } from 'react'
-
-const JOBS = [
-  {
-    title: 'Talent Acquisition Specialist',
-    bullets: [
-      'Sourcing and screening candidates across multiple platforms',
-      'Conducting interviews and coordinating hiring processes',
-      'Building talent pipelines for current and future hiring needs',
-    ],
-  },
-  {
-    title: 'Performance Marketing Team Leader',
-    bullets: [
-      'Planning & Executing PPC Strategies',
-      'Managing and Optimizing PPC Campaigns',
-      'Team Management and Development',
-    ],
-  },
-  {
-    title: 'Performance Marketing Specialist',
-    bullets: [
-      'Running paid ad campaigns on Meta, Google, TikTok',
-      'Analyzing campaign data and optimizing for ROAS',
-      'A/B testing creatives and landing pages',
-    ],
-  },
-  {
-    title: 'Operations Leader',
-    bullets: [
-      'Overseeing day-to-day operational workflows',
-      'Coordinating cross-functional teams and processes',
-      'Driving continuous improvement initiatives',
-    ],
-  },
-  {
-    title: 'Ecommerce Leader',
-    bullets: [
-      'Managing product listings and marketplace storefronts',
-      'Developing growth strategies across Amazon, Etsy, TikTok',
-      'Analyzing sales data and identifying optimization opportunities',
-    ],
-  },
-]
+import { useLanguage } from '../../../i18n/LanguageContext'
 
 /* ── Chevron icon ──────────────────────────────────────────── */
 function Chevron({ open }) {
@@ -127,6 +85,7 @@ function JobItem({ job, open, onToggle }) {
 
 /* ── Section ───────────────────────────────────────────────── */
 function Recruitment() {
+  const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(1)
   const [activeDot, setActiveDot]     = useState(0)
 
@@ -140,24 +99,24 @@ function Recruitment() {
         <div className="flex flex-col items-center text-center mb-10">
           <span className="inline-block mb-5 px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Join With Us!
+            {t.recruitment.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 mb-3 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            Recruitment<br />SECOM
+            {t.recruitment.title}<br />SECOM
           </h2>
 
           <p className="text-white/45 max-w-lg" style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}>
-            Here's what our partners say about working with us to achieve stellar growth.
+            {t.recruitment.desc}
           </p>
         </div>
 
         {/* Accordion */}
         <div className="flex flex-col gap-3">
-          {JOBS.map((job, i) => (
+          {t.recruitment.jobs.map((job, i) => (
             <JobItem
               key={i}
               job={job}
@@ -194,7 +153,7 @@ function Recruitment() {
               boxShadow:  '0 4px 20px rgba(255,1,55,0.40)',
             }}
           >
-            Contact Us
+            {t.recruitment.contactUs}
           </button>
         </div>
 

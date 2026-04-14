@@ -1,29 +1,30 @@
+import { useLanguage } from '../../../i18n/LanguageContext'
 import ceoImg          from '../../../assets/images/directors/mac-vuong-bien.png'
 import vuDucDuongImg   from '../../../assets/images/directors/vu-duc-duong.png'
 import phanHuuThanhImg from '../../../assets/images/directors/phan-huu-thanh.png'
 import nguyenVanThinhImg from '../../../assets/images/directors/nguyen-van-thinh.png'
 
 const CEO = {
-  img: ceoImg, name: 'Mac Vuong Bien', title: 'CEO-Founder',
+  img: ceoImg, name: 'Mac Vuong Bien',
 }
 
 /* 3 founders, positioned around the CEO circle */
 const FOUNDERS = [
   {
     img: vuDucDuongImg,
-    name: 'Vu Duc Duong', title: 'Founder',
+    name: 'Vu Duc Duong',
     // left side
     pos: { top: '38%', left: '10%', transform: 'translate(-50%, -50%)' },
   },
   {
     img: phanHuuThanhImg,
-    name: 'Phan Huu Thanh', title: 'Founder',
+    name: 'Phan Huu Thanh',
     // right side
     pos: { top: '38%', left: '90%', transform: 'translate(-50%, -50%)' },
   },
   {
     img: nguyenVanThinhImg,
-    name: 'Nguyen Van Thinh', title: 'Founder',
+    name: 'Nguyen Van Thinh',
     // bottom center
     pos: { top: '80%', left: '50%', transform: 'translate(-50%, -50%)' },
   },
@@ -56,7 +57,7 @@ function Avatar({ img, name, title, large = false }) {
 }
 
 /* ── Desktop radial diagram ────────────────────────────────── */
-function Diagram() {
+function Diagram({ t }) {
   return (
     <div className="relative mx-auto" style={{ maxWidth: '700px', height: '420px' }}>
 
@@ -85,13 +86,13 @@ function Diagram() {
         className="absolute z-10"
         style={{ top: '42%', left: '50%', transform: 'translate(-50%, -50%)' }}
       >
-        <Avatar img={CEO.img} name={CEO.name} title={CEO.title} large />
+        <Avatar img={CEO.img} name={CEO.name} title={t.board.ceo} large />
       </div>
 
       {/* Founders around orbit */}
       {FOUNDERS.map(f => (
         <div key={f.name} className="absolute z-10" style={f.pos}>
-          <Avatar img={f.img} name={f.name} title={f.title} />
+          <Avatar img={f.img} name={f.name} title={t.board.founder} />
         </div>
       ))}
     </div>
@@ -99,15 +100,15 @@ function Diagram() {
 }
 
 /* ── Mobile grid ───────────────────────────────────────────── */
-function MobileGrid() {
+function MobileGrid({ t }) {
   return (
     <div className="flex flex-col items-center gap-8">
       {/* CEO first */}
-      <Avatar img={CEO.img} name={CEO.name} title={CEO.title} large />
+      <Avatar img={CEO.img} name={CEO.name} title={t.board.ceo} large />
       {/* Founders in row */}
       <div className="grid grid-cols-3 gap-6 w-full max-w-sm">
         {FOUNDERS.map(f => (
-          <Avatar key={f.name} img={f.img} name={f.name} title={f.title} />
+          <Avatar key={f.name} img={f.img} name={f.name} title={t.board.founder} />
         ))}
       </div>
     </div>
@@ -116,6 +117,8 @@ function MobileGrid() {
 
 /* ── Section ───────────────────────────────────────────────── */
 function BoardOfDirector() {
+  const { t } = useLanguage()
+
   return (
     <section className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
@@ -124,30 +127,30 @@ function BoardOfDirector() {
         <div className="flex flex-col items-center text-center mb-6">
           <span className="inline-block mb-5 px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Our Leader
+            {t.board.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            Board of Directors<br />SECOM
+            {t.board.title}<br />SECOM
           </h2>
         </div>
 
         {/* Diagram */}
         <div className="hidden md:block">
-          <Diagram />
+          <Diagram t={t} />
         </div>
         <div className="md:hidden">
-          <MobileGrid />
+          <MobileGrid t={t} />
         </div>
 
         {/* Bottom badge */}
         <div className="flex justify-center mt-6 md:mt-2">
           <span className="inline-block px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Our Leader
+            {t.board.badge}
           </span>
         </div>
 

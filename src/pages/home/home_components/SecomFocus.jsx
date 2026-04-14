@@ -1,29 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useLanguage } from '../../../i18n/LanguageContext'
 import news1 from '../../../assets/images/focus/news-1.png'
 import news2 from '../../../assets/images/focus/news-2.png'
 import news3 from '../../../assets/images/focus/news-3.png'
 
 const ARTICLES = [
-  {
-    img: news1,
-    title: 'Đi Làm Ngày Mưa - Sài Gòn',
-    desc:  'Khám phá câu chuyện về những ngày mưa thành phố Sài Gòn, trang điểm qua podcast đặc biệt của SECOM.',
-  },
-  {
-    img: news2,
-    title: "SECOM nhận giải thưởng 'Rising Star' tại Amazon Award 2022",
-    desc:  "SECOM trở thành một trong những doanh nghiệp Việt Nam xuất sắc nhận giải 'Rising Star' tại Amazon Global Selling Việt Nam.",
-  },
-  {
-    img: news3,
-    title: 'Team Building 2024: Đại Gia Đình SECOM Tại Nha Trang',
-    desc:  'Team building 2024 cùng đại gia đình SECOM tại Nha Trang. Khám phá những trải nghiệm vui chơi và gắn kết.',
-  },
+  { img: news1 },
+  { img: news2 },
+  { img: news3 },
 ]
 
 const DOTS = 3
 
-function NewsCard({ article }) {
+function NewsCard({ article, readMore }) {
   return (
     <div
       className="rounded-2xl flex flex-col overflow-hidden h-full"
@@ -64,9 +53,9 @@ function NewsCard({ article }) {
               background: 'linear-gradient(to top, rgba(255,1,55,0.35), rgba(255,1,55,0) 100%)',
               boxShadow: '0 0 12px rgba(255,1,55,0.2)',
             }}
-            aria-label="Read more"
+            aria-label={readMore}
           >
-            <span className="text-white/90 text-sm font-light">Read more</span>
+            <span className="text-white/90 text-sm font-light">{readMore}</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5 12H19M19 12L12 5M19 12L12 19"
@@ -82,6 +71,7 @@ function NewsCard({ article }) {
 }
 
 function SecomFocus() {
+  const { t } = useLanguage()
   const [activeDot, setActiveDot] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [slideIndex, setSlideIndex] = useState(DOTS) // start at middle copy
@@ -136,29 +126,28 @@ function SecomFocus() {
         <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Our Stories
+            {t.secomFocus.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 mb-3 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            SECOM Focus
+            {t.secomFocus.title}
           </h2>
 
           <p
             className="text-white/80 italic mb-2"
             style={{ fontSize: 'clamp(13px, 1.2vw, 16px)' }}
           >
-            "Bringing Vietnamese brands to shine globally."
+            {t.secomFocus.quote}
           </p>
 
           <p
             className="text-white/45 max-w-2xl"
             style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
           >
-            We move forward with passion, dedication, and the belief that
-            signature creations leave an enduring mark.
+            {t.secomFocus.desc}
           </p>
         </div>
 
@@ -174,7 +163,15 @@ function SecomFocus() {
               <div key={i} className="w-full shrink-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {ARTICLES.map((article, j) => (
-                    <NewsCard key={j} article={article} />
+                    <NewsCard
+                      key={j}
+                      article={{
+                        img: article.img,
+                        title: t.secomFocus.articles[j].title,
+                        desc: t.secomFocus.articles[j].desc,
+                      }}
+                      readMore={t.secomFocus.readMore}
+                    />
                   ))}
                 </div>
               </div>

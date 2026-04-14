@@ -1,4 +1,3 @@
-import Header from '../common/Header'
 import Hero from './home_components/Hero'
 import Network from './home_components/Network'
 import FeaturedProduct from './home_components/FeaturedProduct'

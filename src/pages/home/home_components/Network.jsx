@@ -4,6 +4,7 @@ import etsyLogo     from '../../../assets/images/etsy_logo.png'
 import tiktokLogo   from '../../../assets/images/tiktok_logo.svg'
 import shopifyLogo  from '../../../assets/images/shopify_logo.png'
 import './Network.css'
+import { useLanguage } from '../../../i18n/LanguageContext'
 
 const LOGOS = [
   { src: amazonLogo,  alt: 'Amazon'  },
@@ -16,6 +17,7 @@ const LOGOS = [
 const TRACK = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS]
 
 function Network() {
+  const { t } = useLanguage()
   return (
     <section
       id="network"
@@ -46,21 +48,21 @@ function Network() {
         {/* Badge */}
         <span className="inline-block px-4 py-1 text-[10px] font-semibold tracking-[0.18em]
                          text-white/90 uppercase border border-red-600/40 bg-red-950/25 rounded-full">
-          Your Success, Our Success
+          {t.network.badge}
         </span>
 
         <h2
           className="text-white font-semibold m-0"
           style={{ fontSize: 'clamp(22px, 3vw, 40px)' }}
         >
-          Secom Network
+          {t.network.title}
         </h2>
 
         <p
           className="text-white/50 m-0 max-w-md"
           style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
         >
-          Pioneering global e-commerce, bringing Vietnamese brands to the world
+          {t.network.desc}
         </p>
       </div>
 

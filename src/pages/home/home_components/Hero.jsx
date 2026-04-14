@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '../../../i18n/LanguageContext'
 import topRedSun from '../../../assets/images/top_red_sun.svg'
 import risingStarCup from '../../../assets/images/rising_star_cup.png'
 import './Hero.css'
@@ -16,11 +17,11 @@ const STARS = [
 ]
 
 const STATS = [
-  { target: 8,   format: n => `${n}+`,  label: 'Years of\nExperience'       },
-  { target: 200, format: n => `${n}+`,  label: 'Staffs'                      },
-  { isImage: true,                       label: 'Amazon Rising\nStar 2022'    },
-  { target: 95,  format: n => `${n}%`,  label: 'Customer\nSatisfaction'      },
-  { target: 1,   format: n => `${n}M+`, label: 'International\nProducts'     },
+  { target: 8,   format: n => `${n}+`,  labelKey: 'experience'  },
+  { target: 200, format: n => `${n}+`,  labelKey: 'staffs'      },
+  { isImage: true,                       labelKey: 'risingstar'  },
+  { target: 95,  format: n => `${n}%`,  labelKey: 'satisfaction' },
+  { target: 1,   format: n => `${n}M+`, labelKey: 'products'    },
 ]
 
 /* Each card gets a unique red hotspot in a different corner/position */
@@ -77,7 +78,7 @@ function StatCard({ stat, triggered, gradient, className = '' }) {
         className="text-white/55 text-center leading-snug"
         style={{ fontSize: 'clamp(10px, 1vw, 13px)', whiteSpace: 'pre-line' }}
       >
-        {stat.label}
+        {stat.translatedLabel}
       </span>
     </div>
   )
@@ -97,6 +98,7 @@ function Badge({ children }) {
 
 /* ── Hero ────────────────────────────────────────────────── */
 function Hero() {
+  const { t } = useLanguage()
   const [triggered, setTriggered] = useState(false)
   const statsRef   = useRef(null)
 
@@ -158,12 +160,12 @@ function Hero() {
                      pt-10 md:pt-0 mb-10
                      flex-2"
         >
-          <Badge>Explore Beyond Limits</Badge>
+          <Badge>{t.hero.badge1}</Badge>
           <h1
             className="text-white font-semibold leading-[0.95] tracking-wide m-0"
             style={{ fontSize: 'clamp(38px, 6.5vw, 96px)' }}
           >
-            TOGETHER<br />WE ADVANCE
+            {t.hero.title1}<br />{t.hero.title2}
           </h1>
         </div>
 
@@ -185,21 +187,21 @@ function Hero() {
                      flex-3"
         >
           <div className="mt-6 mb-2">
-            <Badge>Your Success, Our Success</Badge>
+            <Badge>{t.hero.badge2}</Badge>
           </div>
 
           <h2
             className="text-white font-semibold m-0"
             style={{ fontSize: 'clamp(20px, 2.4vw, 34px)' }}
           >
-            Impressive Numbers
+            {t.hero.subtitle}
           </h2>
 
           <p
             className="text-white/50 m-0"
             style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
           >
-            Achievements we are extremely proud of over the past 8 years
+            {t.hero.desc}
           </p>
 
           {/* Stats grid */}
@@ -207,7 +209,7 @@ function Hero() {
             {STATS.map((stat, i) => (
               <StatCard
                 key={i}
-                stat={stat}
+                stat={{ ...stat, translatedLabel: t.hero.stats[stat.labelKey] }}
                 triggered={triggered}
                 gradient={CARD_GRADIENTS[i]}
                 className={stat.isImage ? 'col-span-2 md:col-span-1' : ''}
@@ -217,7 +219,7 @@ function Hero() {
 
           {/* Explore More */}
           <div className="w-full flex items-center justify-center md:justify-end gap-3 mt-1 md:pr-2">
-            <span className="text-white/65 text-sm font-light tracking-wide">Explore More</span>
+            <span className="text-white/65 text-sm font-light tracking-wide">{t.hero.explore}</span>
             <button
               onClick={handleExplore}
               aria-label="Scroll to next section"

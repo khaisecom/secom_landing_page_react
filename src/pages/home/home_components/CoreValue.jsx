@@ -1,4 +1,5 @@
 import secomLogo from '../../../assets/images/secom_logo.png'
+import { useLanguage } from '../../../i18n/LanguageContext'
 
 /* Shared gradient: dark top → red bottom */
 const CARD_GRADIENT = 'linear-gradient(to bottom, #0a0a0a 0%, #170810 52%, rgba(160,0,30,0.72) 100%)'
@@ -18,40 +19,30 @@ const CARD_SHADOW   = '0 0 24px rgba(255,1,55,0.12)'
 const VALUES = [
   {
     num: 1,
-    title: 'Integrity',
-    desc: 'Building trust and respect with customers, partners, colleagues, and the community — the foundation for sustainable growth in all activities.',
     cardPos: { top: '2%', left: '50%', transform: 'translateX(-50%)' },
     align: 'center',
     line:  { x2: 50, y2: 25 },   // badge at bottom-center of top card
   },
   {
     num: 2,
-    title: 'Responsibility',
-    desc: "Forms the foundation of trust with customers, partners, and colleagues while ensuring each individual fulfills duties and contributes to the company's development.",
     cardPos: { top: '32%', left: '1%' },
     align: 'left',
     line:  { x2: 10, y2: 55 },   // badge bottom-center of left-mid card
   },
   {
     num: 3,
-    title: 'Collaboration',
-    desc: "A key factor in a dynamic working environment, enabling the team to overcome challenges and pursue the highest performance for the company's sustainable growth.",
     cardPos: { top: '63%', left: '1%' },
     align: 'left',
     line:  { x2: 10, y2: 86 },   // badge bottom-center of bottom-left card
   },
   {
     num: 4,
-    title: 'Continuous Learning',
-    desc: "Helps each individual improve skills, grow personally, and stay updated with knowledge — contributing to the company's overall development.",
     cardPos: { top: '32%', right: '1%' },
     align: 'right',
     line:  { x2: 90, y2: 55 },   // mirror of value 2
   },
   {
     num: 5,
-    title: 'Creativity',
-    desc: "Essential for solving problems effectively, driving innovation, and thinking beyond current limits — opening new opportunities for growth.",
     cardPos: { top: '63%', right: '1%' },
     align: 'right',
     line:  { x2: 90, y2: 86 },   // mirror of value 3
@@ -59,7 +50,7 @@ const VALUES = [
 ]
 
 /* ── Shared card (badge protrudes from bottom) ─────────────── */
-function ValueCard({ v, textAlign }) {
+function ValueCard({ v, title, desc, textAlign }) {
   const align = textAlign ?? v.align
   return (
     <div className="relative" style={{ paddingBottom: '14px' }}>
@@ -81,13 +72,13 @@ function ValueCard({ v, textAlign }) {
           className="text-white font-semibold text-sm mb-1.5 m-0 leading-snug"
           style={{ textAlign: align }}
         >
-          {v.title}
+          {title}
         </h3>
         <p
           className="text-white/50 leading-relaxed m-0"
           style={{ fontSize: '11px', textAlign: align }}
         >
-          {v.desc}
+          {desc}
         </p>
       </div>
 
@@ -110,6 +101,7 @@ function ValueCard({ v, textAlign }) {
 
 /* ── Desktop spider diagram ─────────────────────────────────── */
 function Diagram() {
+  const { t } = useLanguage()
   return (
     <div
       className="relative w-full"
@@ -153,13 +145,13 @@ function Diagram() {
       </div>
 
       {/* Value cards — positioned absolutely */}
-      {VALUES.map(v => (
+      {VALUES.map((v, i) => (
         <div
           key={v.num}
           className="absolute"
           style={{ ...v.cardPos, width: '200px' }}
         >
-          <ValueCard v={v} />
+          <ValueCard v={v} title={t.coreValue.values[i].title} desc={t.coreValue.values[i].desc} />
         </div>
       ))}
     </div>
@@ -168,10 +160,11 @@ function Diagram() {
 
 /* ── Mobile list ────────────────────────────────────────────── */
 function MobileList() {
+  const { t } = useLanguage()
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-      {VALUES.map(v => (
-        <ValueCard key={v.num} v={v} textAlign="left" />
+      {VALUES.map((v, i) => (
+        <ValueCard key={v.num} v={v} title={t.coreValue.values[i].title} desc={t.coreValue.values[i].desc} textAlign="left" />
       ))}
     </div>
   )
@@ -179,6 +172,7 @@ function MobileList() {
 
 /* ── Section ────────────────────────────────────────────────── */
 function CoreValue() {
+  const { t } = useLanguage()
   return (
     <section className="bg-[#0c0c0c] py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
@@ -188,25 +182,24 @@ function CoreValue() {
           <span className="inline-block mb-4 px-4 py-1 text-white text-[10px] font-bold
                            tracking-[0.2em] uppercase rounded-full border border-red-600/40
                            bg-red-950/25">
-            Why Partner With Us?
+            {t.coreValue.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 mb-3 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            5 Core Values
+            {t.coreValue.title}
           </h2>
 
           <p className="text-white/70 italic mb-2"
              style={{ fontSize: 'clamp(13px, 1.2vw, 16px)' }}>
-            "Guided by the vision 'Bringing Vietnamese brands to shine globally'"
+            {t.coreValue.quote}
           </p>
 
           <p className="text-white/40 max-w-2xl"
              style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}>
-            we move forward with passion, dedication and the belief that
-            signature creations leave an enduring mark.
+            {t.coreValue.desc}
           </p>
         </div>
 

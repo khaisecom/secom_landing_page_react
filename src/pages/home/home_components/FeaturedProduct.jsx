@@ -1,19 +1,21 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useLanguage } from '../../../i18n/LanguageContext'
 import hoodieImg from '../../../assets/images/products/hoodie.png'
 import pajamasImg from '../../../assets/images/products/pajamas.png'
 import sweaterImg from '../../../assets/images/products/sweater.png'
 import buttonShirtImg from '../../../assets/images/products/button-shirt.png'
 
 const PRODUCTS = [
-  { name: 'Hoodie', img: hoodieImg },
-  { name: 'Pajamas Set', img: pajamasImg },
-  { name: 'Sweater', img: sweaterImg },
-  { name: 'Button Shirt', img: buttonShirtImg },
+  { nameKey: 'hoodie', img: hoodieImg },
+  { nameKey: 'pajamas', img: pajamasImg },
+  { nameKey: 'sweater', img: sweaterImg },
+  { nameKey: 'buttonShirt', img: buttonShirtImg },
 ]
 
 const DOTS = 3
 
-function ProductCard({ product }) {
+function ProductCard({ product, t }) {
+  const displayName = t.featuredProduct.products[product.nameKey]
   return (
     <div className="relative pt-4">
       {/* Label pill — sits half outside the card */}
@@ -22,7 +24,7 @@ function ProductCard({ product }) {
         style={{ background: '#0d0507' }}
       >
         <span className="text-white font-semibold text-sm tracking-wide whitespace-nowrap">
-          {product.name}
+          {displayName}
         </span>
       </div>
 
@@ -33,7 +35,7 @@ function ProductCard({ product }) {
       >
         <img
           src={product.img}
-          alt={product.name}
+          alt={displayName}
           className="w-full object-contain"
           style={{ height: 'clamp(200px, 20vw, 300px)' }}
         />
@@ -43,6 +45,7 @@ function ProductCard({ product }) {
 }
 
 function FeaturedProduct() {
+  const { t } = useLanguage()
   const [activeDot, setActiveDot] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [slideIndex, setSlideIndex] = useState(DOTS) // start at middle copy
@@ -98,29 +101,28 @@ function FeaturedProduct() {
         <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Client Stories
+            {t.featuredProduct.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 mb-3 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            Featured Product
+            {t.featuredProduct.title}
           </h2>
 
           <p
             className="text-white/80 italic mb-2"
             style={{ fontSize: 'clamp(13px, 1.2vw, 16px)' }}
           >
-            "Bringing Vietnamese brands to shine globally."
+            {t.featuredProduct.quote}
           </p>
 
           <p
             className="text-white/45 max-w-2xl"
             style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
           >
-            We move forward with passion, dedication, and the belief that
-            signature creations leave an enduring mark.
+            {t.featuredProduct.desc}
           </p>
         </div>
 
@@ -136,7 +138,7 @@ function FeaturedProduct() {
               <div key={i} className="w-full shrink-0">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {PRODUCTS.map((p, j) => (
-                    <ProductCard key={j} product={p} />
+                    <ProductCard key={j} product={p} t={t} />
                   ))}
                 </div>
               </div>

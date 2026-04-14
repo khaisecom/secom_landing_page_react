@@ -1,46 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../../../i18n/LanguageContext'
 
 const TESTIMONIALS = [
-  {
-    name: 'Michael Tanaka',
-    role: 'Head of Marketing',
-    company: 'ZWave Inc.',
-    initials: 'MT',
-    quote:
-      'Working with SECOM transformed our brand presence on Amazon. Their data-driven approach and deep marketplace expertise helped us achieve a 3x increase in sales within just six months.',
-  },
-  {
-    name: 'Hana Sato',
-    role: 'CEO',
-    company: 'JTech Solutions',
-    initials: 'HS',
-    quote:
-      'SECOM\'s team is exceptional. They understood our vision from day one and delivered results that exceeded our expectations. Our brand now ranks among the top sellers in our category.',
-  },
-  {
-    name: 'Sophia Martinez',
-    role: 'Founder',
-    company: 'ALink Media',
-    initials: 'SM',
-    quote:
-      'The creativity and dedication SECOM brings to every campaign is unmatched. They don\'t just run ads — they craft stories that resonate with customers and drive real growth.',
-  },
-  {
-    name: 'James Chen',
-    role: 'VP of Growth',
-    company: 'NovaBrand Co.',
-    initials: 'JC',
-    quote:
-      'SECOM helped us break into the US market faster than we ever thought possible. Their strategic guidance and execution are truly world-class.',
-  },
-  {
-    name: 'Emily Nguyen',
-    role: 'Director of Sales',
-    company: 'PureLeaf Organics',
-    initials: 'EN',
-    quote:
-      'From the very first consultation, SECOM demonstrated an understanding of e-commerce that few agencies can match. Our ROI speaks for itself.',
-  },
+  { name: 'Michael Tanaka', company: 'ZWave Inc.', initials: 'MT' },
+  { name: 'Hana Sato', company: 'JTech Solutions', initials: 'HS' },
+  { name: 'Sophia Martinez', company: 'ALink Media', initials: 'SM' },
+  { name: 'James Chen', company: 'NovaBrand Co.', initials: 'JC' },
+  { name: 'Emily Nguyen', company: 'PureLeaf Organics', initials: 'EN' },
 ]
 
 const AVATAR_COLORS = [
@@ -140,6 +106,7 @@ function TestimonialCard({ t, idx, active }) {
 
 /* ── Section ─────────────────────────────────────────────────── */
 function Trusted() {
+  const { t } = useLanguage()
   const [active, setActive] = useState(1)
   const total = TESTIMONIALS.length
 
@@ -167,18 +134,18 @@ function Trusted() {
         <div className="flex flex-col items-center text-center mb-14">
           <span className="inline-block mb-5 px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            Testimonials
+            {t.trusted.badge}
           </span>
 
           <h2
             className="text-white font-bold m-0 mb-3 leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
-            Trusted by global brand &amp;<br />Visionary Leaders
+            {t.trusted.title1}<br />{t.trusted.title2}
           </h2>
 
           <p className="text-white/45 max-w-lg" style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}>
-            Here's what our partners say about working with us to achieve stellar growth.
+            {t.trusted.desc}
           </p>
         </div>
 
@@ -189,7 +156,11 @@ function Trusted() {
             {indices.map((tIdx, slotIdx) => (
               <TestimonialCard
                 key={tIdx}
-                t={TESTIMONIALS[tIdx]}
+                t={{
+                  ...TESTIMONIALS[tIdx],
+                  quote: t.trusted.testimonials[tIdx].quote,
+                  role: t.trusted.testimonials[tIdx].role,
+                }}
                 idx={tIdx}
                 active={active}
               />
