@@ -58,11 +58,11 @@ function Avatar({ img, name, title, large = false }) {
 
 /* ── Orbit rings config ─────────────────────────────────────── */
 const ORBITS = [
-  { size: 160, opacity: 0.12, duration: '30s', direction: 'normal' },
-  { size: 260, opacity: 0.08, duration: '45s', direction: 'reverse' },
-  { size: 340, opacity: 0.10, duration: '60s', direction: 'normal' },
-  { size: 440, opacity: 0.06, duration: '50s', direction: 'reverse' },
-  { size: 540, opacity: 0.04, duration: '70s', direction: 'normal' },
+  { size: 220, opacity: 0.12, duration: '30s', direction: 'normal' },
+  { size: 340, opacity: 0.08, duration: '45s', direction: 'reverse' },
+  { size: 460, opacity: 0.10, duration: '60s', direction: 'normal' },
+  { size: 580, opacity: 0.06, duration: '50s', direction: 'reverse' },
+  { size: 700, opacity: 0.04, duration: '70s', direction: 'normal' },
 ]
 
 /* ── Desktop radial diagram ────────────────────────────────── */
@@ -80,7 +80,7 @@ function Diagram({ t }) {
         }}
       />
 
-      {/* Orbit rings — solar system style */}
+      {/* Orbit rings — solar system style with random red arcs */}
       {ORBITS.map((orbit, i) => (
         <div
           key={i}
@@ -95,6 +95,44 @@ function Diagram({ t }) {
             animation: `orbit-spin ${orbit.duration} linear infinite ${orbit.direction}`,
           }}
         >
+          {/* Red arc segments at random positions */}
+          {[
+            { rotate: 30 + i * 47, length: 40 + i * 8 },
+            { rotate: 150 + i * 31, length: 25 + i * 5 },
+            { rotate: 260 + i * 19, length: 35 + i * 6 },
+          ].map((arc, j) => (
+            <div
+              key={j}
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                transform: `rotate(${arc.rotate}deg)`,
+                background: `conic-gradient(
+                  from 0deg,
+                  transparent 0deg,
+                  rgba(255, 1, 55, ${0.15 + i * 0.03}) 0deg,
+                  rgba(255, 1, 55, ${0.3 + i * 0.04}) ${arc.length / 2}deg,
+                  rgba(255, 1, 55, ${0.15 + i * 0.03}) ${arc.length}deg,
+                  transparent ${arc.length}deg
+                )`,
+                filter: 'blur(3px)',
+                mask: `radial-gradient(
+                  farthest-side at 50% 50%,
+                  transparent calc(100% - 6px),
+                  black calc(100% - 3px),
+                  black 100%,
+                  transparent 100%
+                )`,
+                WebkitMask: `radial-gradient(
+                  farthest-side at 50% 50%,
+                  transparent calc(100% - 6px),
+                  black calc(100% - 3px),
+                  black 100%,
+                  transparent 100%
+                )`,
+              }}
+            />
+          ))}
+
           {/* Small dot on orbit */}
           <div
             className="absolute rounded-full"
