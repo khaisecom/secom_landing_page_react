@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import news1 from '../../../assets/images/focus/news-1.png'
 import news2 from '../../../assets/images/focus/news-2.png'
 import news3 from '../../../assets/images/focus/news-3.png'
@@ -20,6 +20,8 @@ const ARTICLES = [
     desc:  'Team building 2024 cùng đại gia đình SECOM tại Nha Trang. Khám phá những trải nghiệm vui chơi và gắn kết.',
   },
 ]
+
+const DOTS = 3
 
 function NewsCard({ article }) {
   return (
@@ -54,14 +56,17 @@ function NewsCard({ article }) {
         </p>
 
         {/* Read more */}
-        <div className="flex items-center gap-3 mt-auto pt-2">
-          <span className="text-white/70 text-sm font-light">Read more</span>
+        <div className="mt-auto pt-2">
           <button
-            className="w-8 h-8 rounded-full border border-[#FF0137] flex items-center justify-center
-                       shrink-0 transition-all duration-300 hover:bg-[#FF0137]/20"
-            style={{ boxShadow: '0 0 12px rgba(255,1,55,0.25)' }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#FF0137]/50
+                       transition-all duration-300 hover:border-[#FF0137]"
+            style={{
+              background: 'linear-gradient(to top, rgba(255,1,55,0.35), rgba(255,1,55,0) 100%)',
+              boxShadow: '0 0 12px rgba(255,1,55,0.2)',
+            }}
             aria-label="Read more"
           >
+            <span className="text-white/90 text-sm font-light">Read more</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5 12H19M19 12L12 5M19 12L12 19"
@@ -78,6 +83,50 @@ function NewsCard({ article }) {
 
 function SecomFocus() {
   const [activeDot, setActiveDot] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [slideIndex, setSlideIndex] = useState(DOTS) // start at middle copy
+  const trackRef = useRef(null)
+  const slideIndexRef = useRef(slideIndex)
+  slideIndexRef.current = slideIndex
+
+  const totalSlides = DOTS * 3
+
+  const handleDot = (i) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setSlideIndex(DOTS + i)
+    setActiveDot(i)
+  }
+
+  const handleTransitionEnd = useCallback(() => {
+    setIsTransitioning(false)
+    if (slideIndex < DOTS) {
+      trackRef.current.style.transition = 'none'
+      setSlideIndex(slideIndex + DOTS)
+      requestAnimationFrame(() => {
+        if (trackRef.current) trackRef.current.style.transition = ''
+      })
+    } else if (slideIndex >= DOTS * 2) {
+      trackRef.current.style.transition = 'none'
+      setSlideIndex(slideIndex - DOTS)
+      requestAnimationFrame(() => {
+        if (trackRef.current) trackRef.current.style.transition = ''
+      })
+    }
+  }, [slideIndex])
+
+  // Auto-slide every 3 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isTransitioning) {
+        const next = slideIndexRef.current + 1
+        setIsTransitioning(true)
+        setSlideIndex(next)
+        setActiveDot(((next % DOTS) + DOTS) % DOTS)
+      }
+    }, 3000)
+    return () => clearInterval(timer)
+  }, [isTransitioning])
 
   return (
     <section className="bg-[#0c0c0c] py-14 md:py-20">
@@ -113,19 +162,32 @@ function SecomFocus() {
           </p>
         </div>
 
-        {/* ── Cards — 3 columns on desktop ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {ARTICLES.map((article, i) => (
-            <NewsCard key={i} article={article} />
-          ))}
+        {/* ── Carousel ── */}
+        <div className="overflow-hidden">
+          <div
+            ref={trackRef}
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${slideIndex * 100}%)` }}
+            onTransitionEnd={handleTransitionEnd}
+          >
+            {Array.from({ length: totalSlides }).map((_, i) => (
+              <div key={i} className="w-full shrink-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {ARTICLES.map((article, j) => (
+                    <NewsCard key={j} article={article} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Dots ── */}
         <div className="flex items-center justify-center gap-2 mt-8">
-          {ARTICLES.map((_, i) => (
+          {Array.from({ length: DOTS }).map((_, i) => (
             <button
               key={i}
-              onClick={() => setActiveDot(i)}
+              onClick={() => handleDot(i)}
               aria-label={`Go to slide ${i + 1}`}
               className="rounded-full transition-all duration-300"
               style={{
