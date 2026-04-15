@@ -16,7 +16,7 @@ const LANGUAGES = [
 
 const NAV_KEYS = [
   { key: 'home', to: '/' },
-  { key: 'about', to: '/about' },
+  { key: 'product', to: '/product' },
   { key: 'services', to: '/services' },
   { key: 'recruitment', to: '/recruitment' },
   { key: 'news', to: '/news' },

@@ -8,7 +8,10 @@ import { AppModule } from './app.module.js';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(cookieParser());
+  app.useStaticAssets(join(process.cwd(), 'upload'), { prefix: '/upload' });
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+  app.useStaticAssets(join(process.cwd(), 'secured'), { prefix: '/secured' });
+  app.useStaticAssets(join(process.cwd(), 'images'), { prefix: '/images' });
   app.enableCors({
     origin: process.env.FRONTEND_URL,
     credentials: true,

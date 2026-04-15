@@ -3,7 +3,7 @@ const translations = {
     // Header nav
     nav: {
       home: 'Home',
-      about: 'About',
+      product: 'Product',
       services: 'Services',
       recruitment: 'Recruitment',
       news: 'News',
@@ -127,7 +127,7 @@ const translations = {
   vi: {
     nav: {
       home: 'Trang ch\u1EE7',
-      about: 'V\u1EC1 ch\u00FAng t\u00F4i',
+      product: 'S\u1EA3n ph\u1EA9m',
       services: 'D\u1ECBch v\u1EE5',
       recruitment: 'Tuy\u1EC3n d\u1EE5ng',
       news: 'Tin t\u1EE9c',
@@ -242,7 +242,7 @@ const translations = {
   zh: {
     nav: {
       home: '\u9996\u9875',
-      about: '\u5173\u4E8E\u6211\u4EEC',
+      product: '\u4EA7\u54C1',
       services: '\u670D\u52A1',
       recruitment: '\u62DB\u8058',
       news: '\u65B0\u95FB',

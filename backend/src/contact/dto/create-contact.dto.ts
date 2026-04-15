@@ -1,23 +1,19 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class ApplyDto {
+export class CreateContactDto {
   @IsString()
   @IsNotEmpty()
-  full_name: string;
+  customer_name: string;
 
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @IsString()
-  @IsNotEmpty()
-  phone_number: string;
+  @IsOptional()
+  contact_method?: string;
 
   @IsString()
   @IsOptional()
-  job_category_id?: string;
-
-  @IsString()
-  @IsOptional()
-  location?: string;
+  message?: string;
 }

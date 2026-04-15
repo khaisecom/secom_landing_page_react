@@ -1,7 +1,10 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../auth/guards/roles.guard.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 import { ApplicationService } from './application.service.js';
 import { ApplyDto } from './dto/apply.dto.js';
 
@@ -9,14 +12,31 @@ import { ApplyDto } from './dto/apply.dto.js';
 export class ApplicationController {
   constructor(private applicationService: ApplicationService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
+  @Get()
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.applicationService.findAll({
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 10,
+      search: search || '',
+    });
+  }
+
   @Post()
   @UseInterceptors(
     FileInterceptor('cv', {
       storage: diskStorage({
-        destination: './uploads/cv',
+        destination: './secured',
         filename: (_req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
+          const cleanName = file.originalname
+            .replace(extname(file.originalname), '')
+            .replace(/[^a-zA-Z0-9_\-\u00C0-\u024F\u1E00-\u1EFF]/g, '-');
+          cb(null, `${cleanName}${extname(file.originalname)}`);
         },
       }),
       fileFilter: (_req, file, cb) => {
@@ -33,7 +53,14 @@ export class ApplicationController {
     @Body() dto: ApplyDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const cvUrl = file ? `/uploads/cv/${file.filename}` : undefined;
+    const cvUrl = file ? `/secured/${file.filename}` : undefined;
     return this.applicationService.apply(dto, cvUrl);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.applicationService.remove(parseInt(id));
   }
 }

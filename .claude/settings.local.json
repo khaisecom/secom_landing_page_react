@@ -10,7 +10,14 @@
       "Bash(xargs ls *)",
       "Bash(npx tsc *)",
       "Bash(ls -la e:/secom/secom_landing_page_react/frontend/src/assets/images/news_post_*)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Read(//d/secom_landing/**)",
+      "Read(//d/secom_landing_2026/**)",
+      "Bash(grep -E \"\\\\.\\(js|html\\)$\")",
+      "Bash(find /d/secom_landing_2026 -name \"*.py\" -exec grep -l \"MEDIA\\\\|upload\\\\|FileField\\\\|ImageField\" {} \\\\;)",
+      "Bash(xargs wc *)",
+      "Read(//e/secom/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/secured/hr-admin-executive-dinh-thi-thanh-tuyen_71.pdf)"
     ]
   }
 }

@@ -12,6 +12,7 @@ export class PostService {
     search?: string;
     type?: string;
     categorySlug?: string;
+    sort?: 'asc' | 'desc';
   }) {
     const page = query.page || 1;
     const limit = query.limit || 9;
@@ -41,7 +42,7 @@ export class PostService {
         where,
         skip,
         take: limit,
-        orderBy: { created_at: 'desc' },
+        orderBy: { created_at: query.sort || 'desc' },
         include: {
           tbl_post_category: true,
         },

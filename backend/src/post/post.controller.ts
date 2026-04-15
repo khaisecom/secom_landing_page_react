@@ -1,4 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { randomUUID } from 'crypto';
+import { extname } from 'path';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -16,6 +20,7 @@ export class PostController {
     @Query('search') search?: string,
     @Query('type') type?: string,
     @Query('categorySlug') categorySlug?: string,
+    @Query('sort') sort?: string,
   ) {
     return this.postService.findAll({
       page: page ? parseInt(page) : 1,
@@ -23,6 +28,7 @@ export class PostController {
       search: search || '',
       type: type || '',
       categorySlug: categorySlug || '',
+      sort: sort === 'asc' ? 'asc' : 'desc',
     });
   }
 
@@ -44,6 +50,31 @@ export class PostController {
   @Post(':id/like')
   likePost(@Param('id') id: string) {
     return this.postService.likePost(parseInt(id));
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './upload',
+      filename: (_req, file, cb) => {
+        const uuid = randomUUID();
+        const ext = extname(file.originalname);
+        cb(null, `${uuid}${ext}`);
+      },
+    }),
+    fileFilter: (_req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed'), false);
+      }
+    },
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return { url: `/upload/${file.filename}` };
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

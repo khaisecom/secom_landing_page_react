@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import { useLanguage } from '../../i18n/LanguageContext'
@@ -140,12 +141,14 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
             <div>
               <label className="block text-xs text-white/50 mb-1">Title (VI) *</label>
               <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: Nhân viên thiết kế đồ họa"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
             <div>
               <label className="block text-xs text-white/50 mb-1">Title (EN)</label>
               <input value={form.title_en} onChange={e => setForm({ ...form, title_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: Graphic Designer"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
           </div>
 
@@ -154,12 +157,14 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
             <div>
               <label className="block text-xs text-white/50 mb-1">Vacancies</label>
               <input type="number" min="1" value={form.vacancies} onChange={e => setForm({ ...form, vacancies: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="1"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
             <div>
               <label className="block text-xs text-white/50 mb-1">Location</label>
               <input value={form.locations} onChange={e => setForm({ ...form, locations: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: HCM, HN"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
             <div>
               <label className="block text-xs text-white/50 mb-1">Deadline</label>
@@ -173,12 +178,14 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
             <div>
               <label className="block text-xs text-white/50 mb-1">From Salary</label>
               <input type="number" min="0" value={form.from_salary} onChange={e => setForm({ ...form, from_salary: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: 8000000"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
             <div>
               <label className="block text-xs text-white/50 mb-1">To Salary</label>
               <input type="number" min="0" value={form.to_salary} onChange={e => setForm({ ...form, to_salary: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: 15000000"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
             <div className="flex items-end gap-4 pb-1">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -205,7 +212,8 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
           </div>
           <div>
             <textarea rows={8} required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-mono focus:outline-none focus:border-red-500 resize-y" />
+              placeholder="<h5><strong>TRÁCH NHIỆM:</strong></h5>&#10;<ul>&#10;  <li>Mô tả công việc...</li>&#10;</ul>&#10;&#10;Bấm Tips để xem mẫu HTML"
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-mono placeholder-white/20 focus:outline-none focus:border-red-500 resize-y" />
           </div>
 
           {/* Tips modal */}
@@ -485,13 +493,22 @@ export default function RecruitmentPage() {
               />
             </div>
             {isAdmin && (
-              <button onClick={handleCreate}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                {isEn ? 'Add Position' : 'Thêm vị trí'}
-              </button>
+              <div className="flex items-center gap-2">
+                <NavLink to="/recruitment/cv"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-white/10 bg-white/5 hover:bg-white/10 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                  {isEn ? 'Manage CV' : 'Quản lý CV'}
+                </NavLink>
+                <button onClick={handleCreate}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  {isEn ? 'Add Position' : 'Thêm vị trí'}
+                </button>
+              </div>
             )}
           </div>
 

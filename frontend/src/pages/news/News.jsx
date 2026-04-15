@@ -12,6 +12,35 @@ import newsPost3 from '../../assets/images/news_post_3.jpg'
 
 const API_URL = 'http://localhost:3000/api'
 
+const TEMPLATE_HTML = `<h3>Tiêu đề phần 1</h3>
+<p>Nội dung đoạn văn ở đây...</p>
+<p>Có thể dùng <strong>chữ đậm</strong> và <em>chữ nghiêng</em> trong đoạn văn.</p>
+
+<h3>Tiêu đề phần 2</h3>
+<ul>
+  <li>Điểm nổi bật 1</li>
+  <li>Điểm nổi bật 2</li>
+  <li>Điểm nổi bật 3</li>
+</ul>
+
+<h3>Chèn ảnh</h3>
+<img src="/upload/ten-anh.jpg" />
+
+<h3>Liên kết</h3>
+<p>Truy cập <a href="https://secomvn.com">trang web SECOM</a> để biết thêm.</p>
+
+<hr />
+
+<h3>Kết luận</h3>
+<p>Nội dung kết luận...</p>`
+const BACKEND_URL = 'http://localhost:3000'
+
+function resolveImage(path) {
+  if (!path) return null
+  if (path.startsWith('http') || path.startsWith('data:') || path.startsWith('blob:')) return path
+  return `${BACKEND_URL}${path}`
+}
+
 const bannerSlides = [
   { image: newsBanner1, heading: 'Tin tức nổi bật', desc: 'Cùng SECOM khám phá thị trường Ecommerce 2024' },
   { image: newsBanner2, heading: 'Podcast', desc: 'Đón Trung thu 2024 cùng SECOM' },
@@ -63,6 +92,9 @@ function PostModal({ isOpen, onClose, onSave, post }) {
     thumbnail: '', type: 'news', podcast_url: '', active_on_home: false,
   })
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [tipsOpen, setTipsOpen] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden'
@@ -80,19 +112,47 @@ function PostModal({ isOpen, onClose, onSave, post }) {
         podcast_url: post.podcast_url || '',
         active_on_home: post.active_on_home ?? false,
       })
+      setPreviewUrl(post.thumbnail ? resolveImage(post.thumbnail) : null)
     } else {
       setForm({
         title: '', slug: '', short_description: '', html_desc: '',
         thumbnail: '', type: 'news', podcast_url: '', active_on_home: false,
       })
+      setPreviewUrl(null)
     }
   }, [post, isOpen])
 
   if (!isOpen) return null
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setPreviewUrl(URL.createObjectURL(file))
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await axios.post(`${API_URL}/posts/upload`, formData, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      setForm(f => ({ ...f, thumbnail: res.data.url }))
+      toast.success('Upload thành công')
+    } catch {
+      toast.error('Upload thất bại')
+      setPreviewUrl(null)
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title.trim()) return toast.error('Tiêu đề không được để trống')
+    if (!form.type) return toast.error('Vui lòng chọn loại bài viết')
+    if (!form.thumbnail) return toast.error('Vui lòng tải ảnh thumbnail')
+    if (!form.short_description.trim()) return toast.error('Mô tả ngắn không được để trống')
+    if (!form.html_desc.trim()) return toast.error('Nội dung không được để trống')
     setSaving(true)
     try {
       await onSave(form)
@@ -105,7 +165,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto overscroll-none" onClick={onClose}>
+    <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain" onClick={onClose}>
       <div className="min-h-full flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl p-6" onClick={e => e.stopPropagation()}>
           <h3 className="text-lg font-bold text-white mb-5">{post ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới'}</h3>
@@ -114,26 +174,36 @@ function PostModal({ isOpen, onClose, onSave, post }) {
             <div>
               <label className="block text-xs text-white/50 mb-1">Tiêu đề *</label>
               <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                placeholder="VD: SECOM ra mắt sản phẩm mới 2024"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
             </div>
 
             {/* Type */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Loại bài viết</label>
-              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
+              <label className="block text-xs text-white/50 mb-1">Loại bài viết *</label>
+              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} required
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500">
-                <option value="news">Tin tức</option>
-                <option value="podcast">Podcast</option>
-                <option value="event">Sự kiện</option>
+                <option value="news" className="bg-[#1a1a1a] text-white">Tin tức</option>
+                <option value="podcast" className="bg-[#1a1a1a] text-white">Podcast</option>
+                <option value="event" className="bg-[#1a1a1a] text-white">Sự kiện</option>
               </select>
             </div>
 
-            {/* Thumbnail */}
+            {/* Thumbnail upload */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Thumbnail URL</label>
-              <input value={form.thumbnail} onChange={e => setForm({ ...form, thumbnail: e.target.value })}
-                placeholder="https://... hoặc /upload/..."
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+              <label className="block text-xs text-white/50 mb-1">Ảnh thumbnail *</label>
+              <div className="flex items-center gap-4">
+                {previewUrl && (
+                  <img src={previewUrl} alt="Preview" className="w-20 h-20 rounded-lg object-cover shrink-0" />
+                )}
+                <label className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-sm cursor-pointer transition-colors ${uploading ? 'opacity-50 pointer-events-none' : 'hover:bg-white/5 text-white/60 hover:text-white'}`}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  {uploading ? 'Đang tải...' : 'Chọn ảnh'}
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                </label>
+              </div>
             </div>
 
             {/* Podcast URL (shown only for podcast type) */}
@@ -141,23 +211,69 @@ function PostModal({ isOpen, onClose, onSave, post }) {
               <div>
                 <label className="block text-xs text-white/50 mb-1">Podcast URL</label>
                 <input value={form.podcast_url} onChange={e => setForm({ ...form, podcast_url: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500" />
+                  placeholder="VD: https://open.spotify.com/episode/..."
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
               </div>
             )}
 
             {/* Short description */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Mô tả ngắn</label>
-              <textarea rows={3} value={form.short_description} onChange={e => setForm({ ...form, short_description: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500 resize-y" />
+              <label className="block text-xs text-white/50 mb-1">Mô tả ngắn *</label>
+              <textarea rows={3} value={form.short_description} onChange={e => setForm({ ...form, short_description: e.target.value })} required
+                placeholder="Tóm tắt ngắn gọn nội dung bài viết, hiển thị ở danh sách tin tức..."
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500 resize-y" />
             </div>
 
             {/* HTML Content */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Nội dung (HTML)</label>
-              <textarea rows={8} value={form.html_desc} onChange={e => setForm({ ...form, html_desc: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-mono focus:outline-none focus:border-red-500 resize-y" />
+              <div className="flex items-center gap-2 mb-1">
+                <label className="block text-xs text-white/50">Nội dung (HTML) *</label>
+                <button type="button" onClick={() => setTipsOpen(true)}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-[10px] font-medium hover:bg-yellow-500/20 transition-colors">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  Tips
+                </button>
+              </div>
+              <textarea rows={8} value={form.html_desc} onChange={e => setForm({ ...form, html_desc: e.target.value })} required
+                placeholder="<h3>Tiêu đề</h3>&#10;<p>Nội dung bài viết...</p>&#10;&#10;Bấm Tips để xem mẫu HTML"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-mono placeholder-white/20 focus:outline-none focus:border-red-500 resize-y" />
+
+              {tipsOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4 overflow-y-auto overscroll-contain" onClick={() => setTipsOpen(false)}>
+                  <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+                    <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+                      <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                        HTML Template
+                      </h4>
+                      <button type="button" onClick={() => setTipsOpen(false)} className="text-white/40 hover:text-white transition-colors">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="p-5 max-h-[60vh] overflow-y-auto">
+                      <div className="relative">
+                        <button type="button" onClick={() => {
+                          navigator.clipboard.writeText(TEMPLATE_HTML)
+                          toast.success('Đã copy mẫu!')
+                        }}
+                          className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 text-[10px] text-white/50 hover:bg-white/20 hover:text-white transition-colors">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                          Copy
+                        </button>
+                        <pre className="text-[11px] text-white/60 leading-relaxed whitespace-pre-wrap font-mono bg-white/5 rounded-lg p-4 pr-20 border border-white/10">{TEMPLATE_HTML}</pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Active on home */}
@@ -195,6 +311,9 @@ function News() {
   const [allPosts, setAllPosts] = useState([])
   const [meta, setMeta] = useState({ total: 0, page: 1, totalPages: 1 })
   const [email, setEmail] = useState('')
+  const [search, setSearch] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [sortOrder, setSortOrder] = useState('desc')
 
   // CRUD state
   const [modalOpen, setModalOpen] = useState(false)
@@ -231,17 +350,23 @@ function News() {
   // Fetch all posts for admin table
   const fetchAllPosts = useCallback(async (page = 1) => {
     try {
-      const res = await axios.get(`${API_URL}/posts?page=${page}&limit=10`)
+      const params = new URLSearchParams()
+      params.set('page', page)
+      params.set('limit', '10')
+      if (search.trim()) params.set('search', search.trim())
+      if (typeFilter) params.set('type', typeFilter)
+      params.set('sort', sortOrder)
+      const res = await axios.get(`${API_URL}/posts?${params}`)
       setAllPosts(res.data.data || [])
       setMeta(res.data.meta || { total: 0, page: 1, totalPages: 1 })
     } catch (err) {
       console.error('Failed to fetch all posts:', err)
     }
-  }, [])
+  }, [search, typeFilter, sortOrder])
 
   useEffect(() => {
-    if (isAdmin) fetchAllPosts(1)
-  }, [isAdmin, fetchAllPosts])
+    fetchAllPosts(1)
+  }, [fetchAllPosts])
 
   const handleLike = async (postId) => {
     try {
@@ -317,7 +442,7 @@ function News() {
 
       {/* Delete confirmation modal */}
       {deleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={() => setDeleteId(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-y-auto overscroll-contain" onClick={() => setDeleteId(null)}>
           <div className="w-full max-w-sm bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 text-center" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
               <div className="w-12 h-12 rounded-full bg-red-600/20 flex items-center justify-center">
@@ -410,7 +535,7 @@ function News() {
                   <Link to={`/news/${mainRadio.slug}`} className="block group">
                     <div className="relative rounded-xl overflow-hidden">
                       <img
-                        src={mainRadio.thumbnail || newsBanner2}
+                        src={resolveImage(mainRadio.thumbnail) || newsBanner2}
                         alt={mainRadio.title}
                         className="w-full h-[300px] md:h-[400px] object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -434,7 +559,7 @@ function News() {
                 {sideRadios.map((post) => (
                   <Link key={post.id} to={`/news/${post.slug}`} className="flex gap-3 group">
                     <div className="w-32 h-24 flex-shrink-0 rounded-lg overflow-hidden">
-                      <img src={post.thumbnail || newsBanner3} alt={post.title}
+                      <img src={resolveImage(post.thumbnail) || newsBanner3} alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                     <div className="flex flex-col justify-between flex-1 min-w-0">
@@ -468,120 +593,173 @@ function News() {
         </div>
       </section>
 
-      {/* ── Admin: Post Management Table ── */}
-      {isAdmin && (
-        <section className="py-12 md:py-16 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
-                Quản lý bài viết
-              </h2>
+      {/* ── All Posts with Search & Filter ── */}
+      <section className="py-12 md:py-16 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">Tất cả bài viết</h2>
+              <p className="text-white/40 text-sm mt-1">{meta.total} bài viết</p>
+            </div>
+            {isAdmin && (
               <button onClick={handleCreate}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
                 Thêm bài viết
               </button>
-            </div>
-
-            <div className="overflow-x-auto rounded-xl border border-white/10">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-white/5 border-b border-white/10">
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-12">#</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60">Tiêu đề</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-24">Loại</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-20 text-center">Lượt xem</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-20 text-center">Thích</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28">Ngày tạo</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28 text-center">Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allPosts.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-10 text-center text-white/40 text-sm">Chưa có bài viết nào</td>
-                    </tr>
-                  ) : (
-                    allPosts.map((post, idx) => (
-                      <tr key={post.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3 text-sm text-white/40">{(meta.page - 1) * 10 + idx + 1}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            {post.thumbnail && (
-                              <img src={post.thumbnail} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                            )}
-                            <span className="text-sm text-white font-medium line-clamp-1">{post.title}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                            post.type === 'podcast' ? 'bg-purple-500/20 text-purple-400' :
-                            post.type === 'event' ? 'bg-blue-500/20 text-blue-400' :
-                            'bg-green-500/20 text-green-400'
-                          }`}>
-                            {post.type === 'podcast' ? 'Podcast' : post.type === 'event' ? 'Sự kiện' : 'Tin tức'}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-white/60 text-center">{formatNumber(post.views)}</td>
-                        <td className="px-4 py-3 text-sm text-white/60 text-center">{formatNumber(post.likes)}</td>
-                        <td className="px-4 py-3 text-sm text-white/60">{formatDate(post.created_at)}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-2">
-                            <button onClick={() => handleEdit(post)} title="Sửa"
-                              className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-blue-400 transition-colors">
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                              </svg>
-                            </button>
-                            <button onClick={() => setDeleteId(post.id)} title="Xóa"
-                              className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-red-400 transition-colors">
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              </svg>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            {meta.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-6">
-                <button
-                  onClick={() => fetchAllPosts(meta.page - 1)}
-                  disabled={meta.page <= 1}
-                  className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  Trước
-                </button>
-                {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(p => (
-                  <button key={p} onClick={() => fetchAllPosts(p)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                      p === meta.page ? 'bg-red-600 text-white' : 'text-white/60 hover:bg-white/5'
-                    }`}>
-                    {p}
-                  </button>
-                ))}
-                <button
-                  onClick={() => fetchAllPosts(meta.page + 1)}
-                  disabled={meta.page >= meta.totalPages}
-                  className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  Sau
-                </button>
-              </div>
             )}
           </div>
-        </section>
-      )}
+
+          {/* Search + Filter */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            <div className="relative flex-1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30">
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Tìm kiếm bài viết..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
+              />
+            </div>
+            <div className="flex gap-2">
+              {[
+                { value: '', label: 'Tất cả' },
+                { value: 'news', label: 'Tin tức' },
+                { value: 'podcast', label: 'Podcast' },
+                { value: 'event', label: 'Sự kiện' },
+              ].map(t => (
+                <button
+                  key={t.value}
+                  onClick={() => setTypeFilter(t.value)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    typeFilter === t.value
+                      ? 'bg-red-600 text-white'
+                      : 'bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+              <div className="h-6 w-px bg-white/10 hidden sm:block" />
+              {[
+                { value: 'desc', label: 'Mới nhất' },
+                { value: 'asc', label: 'Cũ nhất' },
+              ].map(s => (
+                <button
+                  key={s.value}
+                  onClick={() => setSortOrder(s.value)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    sortOrder === s.value
+                      ? 'bg-red-600 text-white'
+                      : 'bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Posts grid */}
+          {allPosts.length === 0 ? (
+            <p className="text-white/40 text-center py-10">Không tìm thấy bài viết nào</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allPosts.map((post) => (
+                <div key={post.id} className="group relative">
+                  <Link to={`/news/${post.slug}`} className="block">
+                    <div className="rounded-xl overflow-hidden">
+                      <img
+                        src={resolveImage(post.thumbnail) || newsPost1}
+                        alt={post.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                          post.type === 'podcast' ? 'bg-purple-500/20 text-purple-400' :
+                          post.type === 'event' ? 'bg-blue-500/20 text-blue-400' :
+                          'bg-green-500/20 text-green-400'
+                        }`}>
+                          {post.type === 'podcast' ? 'Podcast' : post.type === 'event' ? 'Sự kiện' : 'Tin tức'}
+                        </span>
+                        <span className="text-white/30 text-xs">{formatDate(post.created_at)}</span>
+                      </div>
+                      <h3 className="text-white font-semibold text-sm group-hover:text-red-500 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-400 text-xs mt-1.5 line-clamp-2">{post.short_description}</p>
+                    </div>
+                  </Link>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center gap-3 text-white/30 text-xs">
+                      <span className="flex items-center gap-1">
+                        <HeartIcon className="w-3.5 h-3.5" /> {formatNumber(post.likes)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <EyeIcon className="w-3.5 h-3.5" /> {formatNumber(post.views)}
+                      </span>
+                    </div>
+                    {isAdmin && (
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => handleEdit(post)} title="Sửa"
+                          className="p-1.5 rounded-lg hover:bg-white/10 text-white/30 hover:text-blue-400 transition-colors">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button onClick={() => setDeleteId(post.id)} title="Xóa"
+                          className="p-1.5 rounded-lg hover:bg-white/10 text-white/30 hover:text-red-400 transition-colors">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {meta.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <button
+                onClick={() => fetchAllPosts(meta.page - 1)}
+                disabled={meta.page <= 1}
+                className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                Trước
+              </button>
+              {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} onClick={() => fetchAllPosts(p)}
+                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                    p === meta.page ? 'bg-red-600 text-white' : 'text-white/60 hover:bg-white/5'
+                  }`}>
+                  {p}
+                </button>
+              ))}
+              <button
+                onClick={() => fetchAllPosts(meta.page + 1)}
+                disabled={meta.page >= meta.totalPages}
+                className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                Sau
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Subscribe Section */}
       <section className="py-12 md:py-16">
@@ -620,7 +798,7 @@ function NewsCard({ post, delay = 0, onLike, fallbackImage }) {
       <Link to={`/news/${post.slug}`} className="block">
         <div className="rounded-xl overflow-hidden">
           <img
-            src={post.thumbnail || fallbackImage || newsPost1}
+            src={resolveImage(post.thumbnail) || fallbackImage || newsPost1}
             alt={post.title}
             className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
           />

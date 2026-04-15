@@ -19,8 +19,7 @@ const SOCIALS = [
 ]
 
 const NAV_LINKS = [
-  { label: 'Về chúng tôi', labelEn: 'About Us', to: '/about' },
-  { label: 'Sản phẩm', labelEn: 'Products', to: '/services' },
+  { label: 'Sản phẩm', labelEn: 'Products', to: '/product' },
   { label: 'SECOM - Academy', labelEn: 'SECOM - Academy', to: '/academy' },
   { label: 'Tuyển dụng', labelEn: 'Recruitment', to: '/recruitment', badge: true },
   { label: 'SECOM-News', labelEn: 'SECOM-News', to: '/news' },
