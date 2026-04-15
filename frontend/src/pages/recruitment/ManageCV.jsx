@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 const API_URL = 'http://localhost:3000/api'
 const BACKEND_URL = 'http://localhost:3000'
@@ -16,6 +17,7 @@ function formatDate(dateStr) {
 function ManageCV() {
   const { user } = useSelector((state) => state.auth)
   const isAdmin = user?.role === 'ROLE_ADMIN'
+  const { t } = useLanguage()
 
   const [applications, setApplications] = useState([])
   const [meta, setMeta] = useState({ total: 0, page: 1, totalPages: 1 })
@@ -48,10 +50,10 @@ function ManageCV() {
     if (!deleteId) return
     try {
       await axios.delete(`${API_URL}/applications/${deleteId}`, { withCredentials: true })
-      toast.success('Xóa hồ sơ thành công')
+      toast.success(t.manageCV.deleteSuccess)
       fetchApplications(meta.page)
     } catch {
-      toast.error('Xóa thất bại')
+      toast.error(t.manageCV.deleteFail)
     } finally {
       setDeleteId(null)
     }
@@ -60,7 +62,7 @@ function ManageCV() {
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-[#111] pt-24 text-center">
-        <p className="text-white/50 text-lg">Bạn không có quyền truy cập trang này</p>
+        <p className="text-white/50 text-lg">{t.manageCV.noAccess}</p>
       </div>
     )
   }
@@ -81,11 +83,11 @@ function ManageCV() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Xóa hồ sơ</h3>
-            <p className="text-sm text-white/50 mb-6">Hồ sơ và CV sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t.manageCV.deleteRecord}</h3>
+            <p className="text-sm text-white/50 mb-6">{t.manageCV.deleteConfirm}</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">Hủy</button>
-              <button onClick={confirmDelete} className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">Xóa</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">{t.manageCV.cancel}</button>
+              <button onClick={confirmDelete} className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">{t.manageCV.delete}</button>
             </div>
           </div>
         </div>
@@ -98,14 +100,14 @@ function ManageCV() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Quay lại tuyển dụng
+          {t.manageCV.backToRecruitment}
         </Link>
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase">Quản lý CV</h1>
-            <p className="text-white/40 text-sm mt-1">{meta.total} hồ sơ ứng tuyển</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase">{t.manageCV.title}</h1>
+            <p className="text-white/40 text-sm mt-1">{meta.total} {t.manageCV.applications}</p>
           </div>
         </div>
 
@@ -120,7 +122,7 @@ function ManageCV() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Tìm theo tên, email, số điện thoại..."
+              placeholder={t.manageCV.searchPlaceholder}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
             />
           </div>
@@ -137,18 +139,18 @@ function ManageCV() {
               <thead>
                 <tr className="bg-white/5 border-b border-white/10">
                   <th className="px-4 py-3 text-xs font-semibold text-white/60 w-12">#</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60">Họ tên</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60">Email</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60">SĐT</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60">Vị trí ứng tuyển</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28">Ngày ứng tuyển</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28 text-center">Hành động</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60">{t.manageCV.fullName}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60">{t.manageCV.email}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60">{t.manageCV.phone}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60">{t.manageCV.position}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28">{t.manageCV.date}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-white/60 w-28 text-center">{t.manageCV.actions}</th>
                 </tr>
               </thead>
               <tbody>
                 {applications.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-white/40 text-sm">Chưa có hồ sơ nào</td>
+                    <td colSpan={7} className="px-4 py-10 text-center text-white/40 text-sm">{t.manageCV.noApplications}</td>
                   </tr>
                 ) : (
                   applications.map((app, idx) => (
@@ -171,20 +173,8 @@ function ManageCV() {
                         <div className="flex items-center justify-center gap-1">
                           {app.cv_url ? (
                             <button
-                              onClick={async () => {
-                                try {
-                                  const res = await fetch(`${BACKEND_URL}${app.cv_url}`)
-                                  if (!res.ok) throw new Error()
-                                  const blob = await res.blob()
-                                  const url = URL.createObjectURL(blob)
-                                  const a = document.createElement('a')
-                                  a.href = url
-                                  a.download = app.cv_url.split('/').pop()
-                                  a.click()
-                                  URL.revokeObjectURL(url)
-                                } catch {
-                                  toast.error('Không thể tải CV. File có thể không tồn tại.')
-                                }
+                              onClick={() => {
+                                window.open(`${BACKEND_URL}${app.cv_url}`, '_blank')
                               }}
                               title="Tải CV"
                               className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-green-400 transition-colors"
@@ -228,7 +218,7 @@ function ManageCV() {
               disabled={meta.page <= 1}
               className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              Trước
+              {t.manageCV.prev}
             </button>
             {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(p => (
               <button key={p} onClick={() => fetchApplications(p)}
@@ -243,7 +233,7 @@ function ManageCV() {
               disabled={meta.page >= meta.totalPages}
               className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              Sau
+              {t.manageCV.next}
             </button>
           </div>
         )}

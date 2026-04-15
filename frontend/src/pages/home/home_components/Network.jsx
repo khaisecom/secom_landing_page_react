@@ -65,8 +65,8 @@ function Network() {
         </h2>
 
         <p
-          className="text-white/50 m-0 max-w-md"
-          style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
+          className="text-white/50 m-0 whitespace-nowrap"
+          style={{ fontSize: 'clamp(10px, 1.1vw, 15px)' }}
         >
           {t.network.desc}
         </p>

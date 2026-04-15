@@ -29,7 +29,7 @@ function getAttrByTypeEn(attributes, type) {
 
 export default function JobDetail() {
   const { id } = useParams()
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const isEn = lang === 'en'
 
   const [job, setJob] = useState(null)
@@ -71,7 +71,7 @@ export default function JobDetail() {
       await axios.post(`${API_URL}/applications`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      toast.success(isEn ? 'Application submitted successfully!' : 'Ứng tuyển thành công!')
+      toast.success(t.jobDetail.applySuccess)
       setApplyOpen(false)
       setForm({ full_name: '', email: '', phone_number: '' })
       setCvFile(null)
@@ -84,31 +84,31 @@ export default function JobDetail() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white/40">{isEn ? 'Loading...' : 'Đang tải...'}</div>
+    return <div className="min-h-screen flex items-center justify-center text-white/40">{t.jobDetail.loading}</div>
   }
 
   if (!job) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-white/40">{isEn ? 'Job not found' : 'Không tìm thấy vị trí'}</p>
-        <Link to="/recruitment" className="text-red-500 hover:text-red-400 text-sm">&larr; {isEn ? 'Back to listings' : 'Quay lại danh sách'}</Link>
+        <p className="text-white/40">{t.jobDetail.notFound}</p>
+        <Link to="/recruitment" className="text-red-500 hover:text-red-400 text-sm">&larr; {t.jobDetail.backToList}</Link>
       </div>
     )
   }
 
   const salary = job.is_negotiable
-    ? (isEn ? 'Negotiable' : 'Thỏa thuận')
+    ? t.jobDetail.negotiable
     : (job.from_salary && job.to_salary)
       ? `${job.from_salary.toLocaleString()} - ${job.to_salary.toLocaleString()}`
       : '—'
 
   const infoItems = [
-    { icon: 'calendar', label: isEn ? 'Deadline' : 'Hạn ứng tuyển', value: formatDate(job.deadline) },
-    { icon: 'group', label: isEn ? 'Quantity' : 'Số lượng', value: job.vacancies || '—' },
-    { icon: 'clock', label: isEn ? 'Work type' : 'Hình thức làm việc', value: isEn ? getAttrByTypeEn(job.attributes, 'WORK_FORM') : getAttrByType(job.attributes, 'WORK_FORM') },
-    { icon: 'money', label: isEn ? 'Salary' : 'Thu nhập', value: salary },
-    { icon: 'education', label: isEn ? 'Education' : 'Học vấn', value: isEn ? getAttrByTypeEn(job.attributes, 'EDUCATION') : getAttrByType(job.attributes, 'EDUCATION') },
-    { icon: 'experience', label: isEn ? 'Experience' : 'Kinh nghiệm', value: isEn ? getAttrByTypeEn(job.attributes, 'EXPERIENCE') : getAttrByType(job.attributes, 'EXPERIENCE') },
+    { icon: 'calendar', label: t.jobDetail.deadline, value: formatDate(job.deadline) },
+    { icon: 'group', label: t.jobDetail.quantity, value: job.vacancies || '—' },
+    { icon: 'clock', label: t.jobDetail.workType, value: isEn ? getAttrByTypeEn(job.attributes, 'WORK_FORM') : getAttrByType(job.attributes, 'WORK_FORM') },
+    { icon: 'money', label: t.jobDetail.salary, value: salary },
+    { icon: 'education', label: t.jobDetail.education, value: isEn ? getAttrByTypeEn(job.attributes, 'EDUCATION') : getAttrByType(job.attributes, 'EDUCATION') },
+    { icon: 'experience', label: t.jobDetail.experience, value: isEn ? getAttrByTypeEn(job.attributes, 'EXPERIENCE') : getAttrByType(job.attributes, 'EXPERIENCE') },
   ]
 
   return (
@@ -124,7 +124,7 @@ export default function JobDetail() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
           </svg>
-          {isEn ? 'Back to listings' : 'Quay lại danh sách'}
+          {t.jobDetail.backToList}
         </Link>
 
         {/* Main card */}
@@ -136,11 +136,11 @@ export default function JobDetail() {
             </h1>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <span className="text-white/40 text-sm">
-                {isEn ? 'Posted: ' : 'Ngày đăng: '}{formatDate(job.created_at || new Date().toISOString())}
+                {t.jobDetail.posted + ' '}{formatDate(job.created_at || new Date().toISOString())}
               </span>
               <button onClick={() => setApplyOpen(true)}
                 className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors">
-                {isEn ? 'Apply Now' : 'Ứng tuyển ngay'}
+                {t.jobDetail.applyNow}
               </button>
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function JobDetail() {
                 dangerouslySetInnerHTML={{ __html: stripStyles(job.description) }}
               />
             ) : (
-              <p className="text-white/40 text-sm">{isEn ? 'No description available.' : 'Chưa có mô tả chi tiết.'}</p>
+              <p className="text-white/40 text-sm">{t.jobDetail.noDescription}</p>
             )}
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function JobDetail() {
             <div className="w-full max-w-md bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
               {/* Modal header */}
               <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                <h3 className="text-lg font-bold">{isEn ? 'Apply' : 'Ứng tuyển'}</h3>
+                <h3 className="text-lg font-bold">{t.jobDetail.apply}</h3>
                 <button onClick={() => setApplyOpen(false)} className="text-white/40 hover:text-white transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -200,7 +200,7 @@ export default function JobDetail() {
               {/* Modal body */}
               <form onSubmit={handleApply} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-xs text-white/50 mb-1">{isEn ? 'Full Name' : 'Họ và Tên'}</label>
+                  <label className="block text-xs text-white/50 mb-1">{t.jobDetail.fullName}</label>
                   <input type="text" required value={form.full_name}
                     onChange={e => setForm({ ...form, full_name: e.target.value })}
                     placeholder="Nguyen Van A"
@@ -214,7 +214,7 @@ export default function JobDetail() {
                     className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-xs text-white/50 mb-1">{isEn ? 'Phone Number' : 'Số điện thoại'}</label>
+                  <label className="block text-xs text-white/50 mb-1">{t.jobDetail.phoneNumber}</label>
                   <input type="tel" required value={form.phone_number}
                     onChange={e => setForm({ ...form, phone_number: e.target.value.replace(/[^0-9]/g, '') })}
                     pattern="[0-9]{9,11}"
@@ -222,14 +222,12 @@ export default function JobDetail() {
                     className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-xs text-white/50 mb-1">{isEn ? 'Upload CV' : 'Tải lên CV'}</label>
+                  <label className="block text-xs text-white/50 mb-1">{t.jobDetail.uploadCV}</label>
                   <input type="file" accept=".doc,.docx,.pdf" required
                     onChange={e => setCvFile(e.target.files[0] || null)}
                     className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm file:mr-3 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:bg-red-600 file:text-white file:cursor-pointer focus:outline-none focus:border-red-500 transition-colors" />
                   <p className="text-white/30 text-[10px] mt-1.5 uppercase leading-tight">
-                    {isEn
-                      ? 'Please name the file without accents. E.g.: CV_NGUYEN_THI_VAN.PDF'
-                      : 'Vui lòng đặt tên file dạng không dấu. VD: CV_NGUYEN_THI_VAN.PDF'}
+                    {t.jobDetail.cvNote}
                   </p>
                 </div>
 
@@ -237,11 +235,11 @@ export default function JobDetail() {
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setApplyOpen(false)}
                     className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">
-                    {isEn ? 'Cancel' : 'Hủy'}
+                    {t.jobDetail.cancel}
                   </button>
                   <button type="submit" disabled={submitting}
                     className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors disabled:opacity-50">
-                    {submitting ? (isEn ? 'Submitting...' : 'Đang gửi...') : (isEn ? 'Apply' : 'Ứng tuyển')}
+                    {submitting ? t.jobDetail.submitting : t.jobDetail.apply}
                   </button>
                 </div>
               </form>

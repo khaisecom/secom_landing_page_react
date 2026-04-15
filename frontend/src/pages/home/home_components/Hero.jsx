@@ -114,8 +114,12 @@ function Hero() {
     return () => io.disconnect()
   }, [])
 
-  const handleExplore = () =>
-    document.getElementById('network')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const handleExplore = () => {
+    const el = document.getElementById('network')
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 80
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
 
   return (
     <section
@@ -150,14 +154,14 @@ function Hero() {
 
       {/* ── Layer 3 : Main content ── */}
       <div
-        className="relative flex flex-col items-center text-center px-4
+        className="relative flex flex-col items-center text-center
                    h-[calc(100vh-4rem)] md:min-h-[calc(100vh-4rem)] md:h-auto"
         style={{ zIndex: 3 }}
       >
         {/* ── Top 40% : headline ── */}
         <div
           className="w-full flex flex-col items-center justify-center gap-2 md:gap-5
-                     pt-4 md:pt-0 mb-0 md:mb-10
+                     pt-4 md:pt-0 mb-0 md:mb-10 px-4
                      flex-2"
         >
           <Badge>{t.hero.badge1}</Badge>
@@ -192,10 +196,10 @@ function Hero() {
         <div
           ref={statsRef}
           className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center
-                     gap-1 md:gap-4 md:pb-6 mt-0 md:mt-10
+                     gap-1 md:gap-4 md:pb-6 mt-0 md:mt-10 px-4
                      flex-3"
         >
-          <div className="mt-0 md:mt-6 mb-0 md:mb-2">
+          <div id="your-success" className="mt-0 md:mt-6 mb-0 md:mb-2">
             <Badge>{t.hero.badge2}</Badge>
           </div>
 

@@ -77,7 +77,6 @@ function JobItem({ job, open, onToggle }) {
 function Recruitment() {
   const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(1)
-  const [activeDot, setActiveDot]     = useState(0)
 
   const toggle = (i) => setActiveIndex(prev => (prev === i ? null : i))
 
@@ -144,22 +143,6 @@ function Recruitment() {
               job={job}
               open={activeIndex === i}
               onToggle={() => toggle(i)}
-            />
-          ))}
-        </div>
-
-        {/* Dots */}
-        <div className="flex items-center justify-center gap-2 mt-8">
-          {[0, 1, 2].map(i => (
-            <button
-              key={i}
-              onClick={() => setActiveDot(i)}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width:      i === activeDot ? '22px' : '10px',
-                height:     '10px',
-                background: i === activeDot ? '#FF0137' : 'rgba(255,255,255,0.25)',
-              }}
             />
           ))}
         </div>

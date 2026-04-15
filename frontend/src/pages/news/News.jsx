@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+import { useLanguage } from '../../i18n/LanguageContext'
 import newsBanner1 from '../../assets/images/news_1.jpg'
 import newsBanner2 from '../../assets/images/news_2.jpg'
 import newsBanner3 from '../../assets/images/news_3.jpg'
@@ -86,7 +87,7 @@ function formatNumber(num) {
 }
 
 // ── Post Modal (Create / Edit) ──
-function PostModal({ isOpen, onClose, onSave, post }) {
+function PostModal({ isOpen, onClose, onSave, post, t }) {
   const [form, setForm] = useState({
     title: '', slug: '', short_description: '', html_desc: '',
     thumbnail: '', type: 'news', podcast_url: '', active_on_home: false,
@@ -137,9 +138,9 @@ function PostModal({ isOpen, onClose, onSave, post }) {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       setForm(f => ({ ...f, thumbnail: res.data.url }))
-      toast.success('Upload thành công')
+      toast.success(t.admin.uploadSuccess)
     } catch {
-      toast.error('Upload thất bại')
+      toast.error(t.admin.uploadFail)
       setPreviewUrl(null)
     } finally {
       setUploading(false)
@@ -148,17 +149,17 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.title.trim()) return toast.error('Tiêu đề không được để trống')
-    if (!form.type) return toast.error('Vui lòng chọn loại bài viết')
-    if (!form.thumbnail) return toast.error('Vui lòng tải ảnh thumbnail')
-    if (!form.short_description.trim()) return toast.error('Mô tả ngắn không được để trống')
-    if (!form.html_desc.trim()) return toast.error('Nội dung không được để trống')
+    if (!form.title.trim()) return toast.error(t.admin.titleRequired)
+    if (!form.type) return toast.error(t.admin.typeRequired)
+    if (!form.thumbnail) return toast.error(t.admin.thumbnailRequired)
+    if (!form.short_description.trim()) return toast.error(t.admin.shortDescRequired)
+    if (!form.html_desc.trim()) return toast.error(t.admin.contentRequired)
     setSaving(true)
     try {
       await onSave(form)
       onClose()
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Lưu thất bại')
+      toast.error(err?.response?.data?.message || t.admin.saveFail)
     } finally {
       setSaving(false)
     }
@@ -168,11 +169,11 @@ function PostModal({ isOpen, onClose, onSave, post }) {
     <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain" onClick={onClose}>
       <div className="min-h-full flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl p-6" onClick={e => e.stopPropagation()}>
-          <h3 className="text-lg font-bold text-white mb-5">{post ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới'}</h3>
+          <h3 className="text-lg font-bold text-white mb-5">{post ? t.admin.editPost : t.admin.newPost}</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Title */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Tiêu đề *</label>
+              <label className="block text-xs text-white/50 mb-1">{t.admin.titleLabel}</label>
               <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
                 placeholder="VD: SECOM ra mắt sản phẩm mới 2024"
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500" />
@@ -180,18 +181,18 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 
             {/* Type */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Loại bài viết *</label>
+              <label className="block text-xs text-white/50 mb-1">{t.admin.typeLabel}</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} required
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500">
-                <option value="news" className="bg-[#1a1a1a] text-white">Tin tức</option>
-                <option value="podcast" className="bg-[#1a1a1a] text-white">Podcast</option>
-                <option value="event" className="bg-[#1a1a1a] text-white">Sự kiện</option>
+                <option value="news" className="bg-[#1a1a1a] text-white">{t.news.newsLabel}</option>
+                <option value="podcast" className="bg-[#1a1a1a] text-white">{t.news.podcast}</option>
+                <option value="event" className="bg-[#1a1a1a] text-white">{t.news.event}</option>
               </select>
             </div>
 
             {/* Thumbnail upload */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Ảnh thumbnail *</label>
+              <label className="block text-xs text-white/50 mb-1">{t.admin.thumbnailLabel}</label>
               <div className="flex items-center gap-4">
                 {previewUrl && (
                   <img src={previewUrl} alt="Preview" className="w-20 h-20 rounded-lg object-cover shrink-0" />
@@ -200,7 +201,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  {uploading ? 'Đang tải...' : 'Chọn ảnh'}
+                  {uploading ? t.admin.uploading : t.admin.selectImage}
                   <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 </label>
               </div>
@@ -218,7 +219,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 
             {/* Short description */}
             <div>
-              <label className="block text-xs text-white/50 mb-1">Mô tả ngắn *</label>
+              <label className="block text-xs text-white/50 mb-1">{t.admin.shortDesc}</label>
               <textarea rows={3} value={form.short_description} onChange={e => setForm({ ...form, short_description: e.target.value })} required
                 placeholder="Tóm tắt ngắn gọn nội dung bài viết, hiển thị ở danh sách tin tức..."
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500 resize-y" />
@@ -227,7 +228,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
             {/* HTML Content */}
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <label className="block text-xs text-white/50">Nội dung (HTML) *</label>
+                <label className="block text-xs text-white/50">{t.admin.content}</label>
                 <button type="button" onClick={() => setTipsOpen(true)}
                   className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-[10px] font-medium hover:bg-yellow-500/20 transition-colors">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -260,7 +261,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
                       <div className="relative">
                         <button type="button" onClick={() => {
                           navigator.clipboard.writeText(TEMPLATE_HTML)
-                          toast.success('Đã copy mẫu!')
+                          toast.success(t.admin.copiedTemplate)
                         }}
                           className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 text-[10px] text-white/50 hover:bg-white/20 hover:text-white transition-colors">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -279,18 +280,18 @@ function PostModal({ isOpen, onClose, onSave, post }) {
             {/* Active on home */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.active_on_home} onChange={e => setForm({ ...form, active_on_home: e.target.checked })} className="accent-red-600" />
-              <span className="text-xs text-white/60">Hiển thị trên trang chủ</span>
+              <span className="text-xs text-white/60">{t.admin.showOnHome}</span>
             </label>
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={onClose}
                 className="px-5 py-2 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">
-                Hủy
+                {t.admin.cancel}
               </button>
               <button type="submit" disabled={saving}
                 className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors disabled:opacity-50">
-                {saving ? 'Đang lưu...' : 'Lưu'}
+                {saving ? t.admin.saving : t.admin.save}
               </button>
             </div>
           </form>
@@ -302,6 +303,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 
 // ── Main News Page ──
 function News() {
+  const { t } = useLanguage()
   const { user } = useSelector((state) => state.auth)
   const isAdmin = user?.role === 'ROLE_ADMIN'
 
@@ -379,7 +381,7 @@ function News() {
 
   const handleSubscribe = () => {
     if (email) {
-      toast.success('Đăng ký thành công!')
+      toast.success(t.news.subscribeSuccess)
       setEmail('')
     }
   }
@@ -398,10 +400,10 @@ function News() {
   const handleSave = async (form) => {
     if (editingPost) {
       await axios.put(`${API_URL}/posts/${editingPost.id}`, form, { withCredentials: true })
-      toast.success('Cập nhật bài viết thành công')
+      toast.success(t.admin.updateSuccess)
     } else {
       await axios.post(`${API_URL}/posts`, form, { withCredentials: true })
-      toast.success('Tạo bài viết thành công')
+      toast.success(t.admin.createSuccess)
     }
     fetchPosts()
     fetchAllPosts(meta.page)
@@ -411,11 +413,11 @@ function News() {
     if (!deleteId) return
     try {
       await axios.delete(`${API_URL}/posts/${deleteId}`, { withCredentials: true })
-      toast.success('Xóa bài viết thành công')
+      toast.success(t.admin.deleteSuccess)
       fetchPosts()
       fetchAllPosts(meta.page)
     } catch {
-      toast.error('Xóa thất bại')
+      toast.error(t.admin.deleteFail)
     } finally {
       setDeleteId(null)
     }
@@ -438,6 +440,7 @@ function News() {
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
         post={editingPost}
+        t={t}
       />
 
       {/* Delete confirmation modal */}
@@ -451,16 +454,16 @@ function News() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Xóa bài viết</h3>
-            <p className="text-sm text-white/50 mb-6">Bạn có chắc chắn muốn xóa bài viết này? Hành động này không thể hoàn tác.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t.news.deletePost}</h3>
+            <p className="text-sm text-white/50 mb-6">{t.news.deleteConfirm}</p>
             <div className="flex gap-3">
               <button onClick={() => setDeleteId(null)}
                 className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">
-                Hủy
+                {t.news.cancel}
               </button>
               <button onClick={confirmDelete}
                 className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">
-                Xóa
+                {t.news.delete}
               </button>
             </div>
           </div>
@@ -499,12 +502,12 @@ function News() {
       <section className="py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-white uppercase mb-8 text-center md:text-left">
-            Nhịp đập SECOM
+            {t.news.featured}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {newsPosts.map((post, idx) => (
-              <NewsCard key={post.id} post={post} delay={idx * 100} onLike={handleLike} fallbackImage={[newsPost1, newsPost2, newsPost3][idx]} />
+              <NewsCard key={post.id} post={post} delay={idx * 100} onLike={handleLike} fallbackImage={[newsPost1, newsPost2, newsPost3][idx]} postedLabel={t.news.postedOn} />
             ))}
           </div>
 
@@ -513,7 +516,7 @@ function News() {
               to="/news/all"
               className="inline-block px-10 py-3 border border-red-600 text-red-500 rounded-full hover:bg-red-600 hover:text-white transition-all duration-300 font-medium"
             >
-              Xem tất cả
+              {t.news.viewAll}
             </Link>
           </div>
         </div>
@@ -523,11 +526,11 @@ function News() {
       <section className="py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-white uppercase mb-8 text-center md:text-left">
-            Radio
+            {t.news.radio}
           </h2>
 
           {radioPosts.length === 0 ? (
-            <p className="text-gray-400 text-center py-10">Chưa có podcast nào.</p>
+            <p className="text-gray-400 text-center py-10">{t.news.noPodcast}</p>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {mainRadio && (
@@ -550,7 +553,7 @@ function News() {
                       {mainRadio.title}
                     </h3>
                     <p className="text-gray-400 text-sm mt-2 line-clamp-2">{mainRadio.short_description}</p>
-                    <PostMeta post={mainRadio} onLike={handleLike} />
+                    <PostMeta post={mainRadio} onLike={handleLike} postedLabel={t.news.postedOn} />
                   </Link>
                 </div>
               )}
@@ -582,7 +585,7 @@ function News() {
                 ))}
                 <Link to="/news/all?type=podcast"
                   className="text-red-500 hover:text-red-400 font-semibold text-sm flex items-center gap-1 mt-2">
-                  Xem thêm
+                  {t.news.viewMore}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
@@ -598,8 +601,8 @@ function News() {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">Tất cả bài viết</h2>
-              <p className="text-white/40 text-sm mt-1">{meta.total} bài viết</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">{t.news.allPosts}</h2>
+              <p className="text-white/40 text-sm mt-1">{meta.total} {t.news.posts}</p>
             </div>
             {isAdmin && (
               <button onClick={handleCreate}
@@ -607,7 +610,7 @@ function News() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                Thêm bài viết
+                {t.news.addPost}
               </button>
             )}
           </div>
@@ -623,33 +626,33 @@ function News() {
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Tìm kiếm bài viết..."
+                placeholder={t.news.searchPlaceholder}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
               />
             </div>
             <div className="flex gap-2">
               {[
-                { value: '', label: 'Tất cả' },
-                { value: 'news', label: 'Tin tức' },
-                { value: 'podcast', label: 'Podcast' },
-                { value: 'event', label: 'Sự kiện' },
-              ].map(t => (
+                { value: '', label: t.news.all },
+                { value: 'news', label: t.news.newsLabel },
+                { value: 'podcast', label: t.news.podcast },
+                { value: 'event', label: t.news.event },
+              ].map(f => (
                 <button
-                  key={t.value}
-                  onClick={() => setTypeFilter(t.value)}
+                  key={f.value}
+                  onClick={() => setTypeFilter(f.value)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                    typeFilter === t.value
+                    typeFilter === f.value
                       ? 'bg-red-600 text-white'
                       : 'bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30'
                   }`}
                 >
-                  {t.label}
+                  {f.label}
                 </button>
               ))}
               <div className="h-6 w-px bg-white/10 hidden sm:block" />
               {[
-                { value: 'desc', label: 'Mới nhất' },
-                { value: 'asc', label: 'Cũ nhất' },
+                { value: 'desc', label: t.news.newest },
+                { value: 'asc', label: t.news.oldest },
               ].map(s => (
                 <button
                   key={s.value}
@@ -668,7 +671,7 @@ function News() {
 
           {/* Posts grid */}
           {allPosts.length === 0 ? (
-            <p className="text-white/40 text-center py-10">Không tìm thấy bài viết nào</p>
+            <p className="text-white/40 text-center py-10">{t.news.noPosts}</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {allPosts.map((post) => (
@@ -688,7 +691,7 @@ function News() {
                           post.type === 'event' ? 'bg-blue-500/20 text-blue-400' :
                           'bg-green-500/20 text-green-400'
                         }`}>
-                          {post.type === 'podcast' ? 'Podcast' : post.type === 'event' ? 'Sự kiện' : 'Tin tức'}
+                          {post.type === 'podcast' ? t.news.podcast : post.type === 'event' ? t.news.event : t.news.newsLabel}
                         </span>
                         <span className="text-white/30 text-xs">{formatDate(post.created_at)}</span>
                       </div>
@@ -739,7 +742,7 @@ function News() {
                 disabled={meta.page <= 1}
                 className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                Trước
+                {t.news.prev}
               </button>
               {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(p => (
                 <button key={p} onClick={() => fetchAllPosts(p)}
@@ -754,7 +757,7 @@ function News() {
                 disabled={meta.page >= meta.totalPages}
                 className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                Sau
+                {t.news.next}
               </button>
             </div>
           )}
@@ -766,21 +769,21 @@ function News() {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="bg-linear-to-br from-red-700 to-red-900 rounded-2xl py-12 px-6 md:px-16">
             <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              Đăng ký nhận tin của <span className="text-white">SECOM</span>
+              {t.news.subscribe} <span className="text-white">SECOM</span>
             </h3>
             <div className="max-w-xl mx-auto flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email của bạn (*)"
+                placeholder={t.news.emailPlaceholder}
                 className="flex-1 px-5 py-3 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <button
                 onClick={handleSubscribe}
                 className="px-8 py-3 bg-white text-red-700 font-bold rounded-lg hover:bg-gray-100 transition-colors"
               >
-                Đăng ký
+                {t.news.subscribeBtn}
               </button>
             </div>
           </div>
@@ -792,7 +795,7 @@ function News() {
 
 /* --- Sub-components --- */
 
-function NewsCard({ post, delay = 0, onLike, fallbackImage }) {
+function NewsCard({ post, delay = 0, onLike, fallbackImage, postedLabel }) {
   return (
     <div className="group">
       <Link to={`/news/${post.slug}`} className="block">
@@ -808,16 +811,16 @@ function NewsCard({ post, delay = 0, onLike, fallbackImage }) {
         </h3>
         <p className="text-gray-400 text-sm mt-2 line-clamp-3">{post.short_description}</p>
       </Link>
-      <PostMeta post={post} onLike={onLike} />
+      <PostMeta post={post} onLike={onLike} postedLabel={postedLabel} />
     </div>
   )
 }
 
-function PostMeta({ post, onLike }) {
+function PostMeta({ post, onLike, postedLabel }) {
   return (
     <div className="flex items-center justify-between mt-3">
       <span className="text-gray-500 text-xs">
-        Ngày đăng: {formatDate(post.created_at)}
+        {postedLabel || 'Ngày đăng:'} {formatDate(post.created_at)}
       </span>
       <div className="flex items-center gap-4 text-gray-500 text-xs">
         <button

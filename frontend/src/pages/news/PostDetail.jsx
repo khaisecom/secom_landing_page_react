@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import newsPost1 from '../../assets/images/news_post_1.png'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 const API_URL = 'http://localhost:3000/api'
 const BACKEND_URL = 'http://localhost:3000'
@@ -26,6 +27,7 @@ function formatNumber(num) {
 
 function PostDetail() {
   const { slug } = useParams()
+  const { t } = useLanguage()
   const [post, setPost] = useState(null)
   const [relatedPosts, setRelatedPosts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -63,8 +65,8 @@ function PostDetail() {
   if (error || !post) {
     return (
       <div className="min-h-screen bg-[#111] pt-24 text-center">
-        <p className="text-white/50 text-lg">Bài viết không tồn tại</p>
-        <Link to="/news" className="text-red-500 hover:text-red-400 mt-4 inline-block">Quay lại trang tin tức</Link>
+        <p className="text-white/50 text-lg">{t.postDetail.notFound}</p>
+        <Link to="/news" className="text-red-500 hover:text-red-400 mt-4 inline-block">{t.postDetail.backToNews}</Link>
       </div>
     )
   }
@@ -80,7 +82,7 @@ function PostDetail() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Quay lại trang tin tức
+          {t.postDetail.backToNews}
         </Link>
 
         {/* Article card */}
@@ -90,7 +92,7 @@ function PostDetail() {
             <h1 className="text-white text-lg md:text-xl font-medium leading-snug">{post.title}</h1>
             <div className="flex items-center justify-between mt-3">
               <div className="text-white/50 text-xs md:text-sm">
-                <span className="mr-2">Ngày đăng:</span>
+                <span className="mr-2">{t.postDetail.postedOn}</span>
                 <span>{formatDate(post.created_at)}</span>
               </div>
               <div className="flex items-center gap-3 text-white/40 text-xs">
@@ -142,7 +144,7 @@ function PostDetail() {
         {/* Related posts */}
         {relatedPosts.length > 0 && (
           <div className="mt-8 md:mt-10">
-            <h2 className="text-white text-xl md:text-2xl font-semibold text-center mb-6">Bài viết liên quan</h2>
+            <h2 className="text-white text-xl md:text-2xl font-semibold text-center mb-6">{t.postDetail.relatedPosts}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedPosts.map((rPost) => (
                 <Link
@@ -163,7 +165,7 @@ function PostDetail() {
                     </h3>
                     <p className="text-white/50 text-xs mt-1.5 line-clamp-3">{rPost.short_description}</p>
                     <div className="flex items-center justify-between mt-3 text-white/40 text-xs">
-                      <span>Ngày đăng: {formatDate(rPost.created_at)}</span>
+                      <span>{t.postDetail.postedOn} {formatDate(rPost.created_at)}</span>
                       <div className="flex items-center gap-2">
                         <span className="flex items-center gap-0.5">
                           <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import newsPost1 from '../../assets/images/news_post_1.png'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 const API_URL = 'http://localhost:3000/api'
 const BACKEND_URL = 'http://localhost:3000'
@@ -49,7 +50,7 @@ function formatNumber(num) {
 }
 
 // ── Post Modal ──
-function PostModal({ isOpen, onClose, onSave, post }) {
+function PostModal({ isOpen, onClose, onSave, post, t }) {
   const [form, setForm] = useState({
     title: '', short_description: '', html_desc: '',
     thumbnail: '', type: 'news', podcast_url: '', active_on_home: false,
@@ -98,9 +99,9 @@ function PostModal({ isOpen, onClose, onSave, post }) {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       setForm(f => ({ ...f, thumbnail: res.data.url }))
-      toast.success('Upload thành công')
+      toast.success(t.admin.uploadSuccess)
     } catch {
-      toast.error('Upload thất bại')
+      toast.error(t.admin.uploadFail)
       setPreviewUrl(null)
     } finally {
       setUploading(false)
@@ -109,17 +110,17 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.title.trim()) return toast.error('Tiêu đề không được để trống')
-    if (!form.type) return toast.error('Vui lòng chọn loại bài viết')
-    if (!form.thumbnail) return toast.error('Vui lòng tải ảnh thumbnail')
-    if (!form.short_description.trim()) return toast.error('Mô tả ngắn không được để trống')
-    if (!form.html_desc.trim()) return toast.error('Nội dung không được để trống')
+    if (!form.title.trim()) return toast.error(t.admin.titleRequired)
+    if (!form.type) return toast.error(t.admin.typeRequired)
+    if (!form.thumbnail) return toast.error(t.admin.thumbnailRequired)
+    if (!form.short_description.trim()) return toast.error(t.admin.shortDescRequired)
+    if (!form.html_desc.trim()) return toast.error(t.admin.contentRequired)
     setSaving(true)
     try {
       await onSave(form)
       onClose()
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Lưu thất bại')
+      toast.error(err?.response?.data?.message || t.admin.saveFail)
     } finally {
       setSaving(false)
     }
@@ -129,7 +130,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
     <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain" onClick={onClose}>
       <div className="min-h-full flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl p-6" onClick={e => e.stopPropagation()}>
-          <h3 className="text-lg font-bold text-white mb-5">{post ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới'}</h3>
+          <h3 className="text-lg font-bold text-white mb-5">{post ? t.admin.editPost : t.admin.newPost}</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs text-white/50 mb-1">Tiêu đề *</label>
@@ -141,9 +142,9 @@ function PostModal({ isOpen, onClose, onSave, post }) {
               <label className="block text-xs text-white/50 mb-1">Loại bài viết *</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} required
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-red-500">
-                <option value="news" className="bg-[#1a1a1a] text-white">Tin tức</option>
-                <option value="podcast" className="bg-[#1a1a1a] text-white">Podcast</option>
-                <option value="event" className="bg-[#1a1a1a] text-white">Sự kiện</option>
+                <option value="news" className="bg-[#1a1a1a] text-white">{t.allNews.newsLabel}</option>
+                <option value="podcast" className="bg-[#1a1a1a] text-white">{t.allNews.podcast}</option>
+                <option value="event" className="bg-[#1a1a1a] text-white">{t.allNews.event}</option>
               </select>
             </div>
             <div>
@@ -156,7 +157,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  {uploading ? 'Đang tải...' : 'Chọn ảnh'}
+                  {uploading ? t.admin.uploading : t.admin.selectImage}
                   <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 </label>
               </div>
@@ -211,7 +212,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
                       <div className="relative">
                         <button type="button" onClick={() => {
                           navigator.clipboard.writeText(TEMPLATE_HTML)
-                          toast.success('Đã copy mẫu!')
+                          toast.success(t.admin.copiedTemplate)
                         }}
                           className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 text-[10px] text-white/50 hover:bg-white/20 hover:text-white transition-colors">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,14 +229,14 @@ function PostModal({ isOpen, onClose, onSave, post }) {
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.active_on_home} onChange={e => setForm({ ...form, active_on_home: e.target.checked })} className="accent-red-600" />
-              <span className="text-xs text-white/60">Hiển thị trên trang chủ</span>
+              <span className="text-xs text-white/60">{t.admin.showOnHome}</span>
             </label>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={onClose}
-                className="px-5 py-2 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">Hủy</button>
+                className="px-5 py-2 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">{t.admin.cancel}</button>
               <button type="submit" disabled={saving}
                 className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors disabled:opacity-50">
-                {saving ? 'Đang lưu...' : 'Lưu'}
+                {saving ? t.admin.saving : t.admin.save}
               </button>
             </div>
           </form>
@@ -249,6 +250,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
 function AllNews() {
   const { user } = useSelector((state) => state.auth)
   const isAdmin = user?.role === 'ROLE_ADMIN'
+  const { t } = useLanguage()
   const [searchParams] = useSearchParams()
 
   const [posts, setPosts] = useState([])
@@ -290,10 +292,10 @@ function AllNews() {
   const handleSave = async (form) => {
     if (editingPost) {
       await axios.put(`${API_URL}/posts/${editingPost.id}`, form, { withCredentials: true })
-      toast.success('Cập nhật thành công')
+      toast.success(t.admin.updateSuccess)
     } else {
       await axios.post(`${API_URL}/posts`, form, { withCredentials: true })
-      toast.success('Tạo bài viết thành công')
+      toast.success(t.admin.createSuccess)
     }
     fetchPosts(meta.page)
   }
@@ -302,16 +304,16 @@ function AllNews() {
     if (!deleteId) return
     try {
       await axios.delete(`${API_URL}/posts/${deleteId}`, { withCredentials: true })
-      toast.success('Xóa thành công')
+      toast.success(t.admin.deleteSuccess)
       fetchPosts(meta.page)
     } catch {
-      toast.error('Xóa thất bại')
+      toast.error(t.admin.deleteFail)
     } finally {
       setDeleteId(null)
     }
   }
 
-  const TYPE_LABELS = { news: 'Tin tức', podcast: 'Podcast', event: 'Sự kiện' }
+  const TYPE_LABELS = { news: t.allNews.newsLabel, podcast: t.allNews.podcast, event: t.allNews.event }
 
   return (
     <div className="min-h-screen bg-[#111] pt-20 pb-16">
@@ -320,7 +322,7 @@ function AllNews() {
         style: { background: '#1a1a1a', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' },
       }} />
 
-      <PostModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} post={editingPost} />
+      <PostModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} post={editingPost} t={t} />
 
       {/* Delete modal */}
       {deleteId && (
@@ -333,11 +335,11 @@ function AllNews() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Xóa bài viết</h3>
-            <p className="text-sm text-white/50 mb-6">Hành động này không thể hoàn tác.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t.allNews.deletePost}</h3>
+            <p className="text-sm text-white/50 mb-6">{t.allNews.deleteConfirm}</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">Hủy</button>
-              <button onClick={confirmDelete} className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">Xóa</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">{t.allNews.cancel}</button>
+              <button onClick={confirmDelete} className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">{t.allNews.delete}</button>
             </div>
           </div>
         </div>
@@ -350,14 +352,14 @@ function AllNews() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Quay lại trang tin tức
+          {t.allNews.backToNews}
         </Link>
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase">Tất cả bài viết</h1>
-            <p className="text-white/40 text-sm mt-1">{meta.total} bài viết</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase">{t.allNews.allPosts}</h1>
+            <p className="text-white/40 text-sm mt-1">{meta.total} {t.allNews.posts}</p>
           </div>
         </div>
 
@@ -372,22 +374,22 @@ function AllNews() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Tìm kiếm bài viết..."
+              placeholder={t.allNews.searchPlaceholder}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
             />
           </div>
           <div className="flex gap-2">
-            {['', 'news', 'podcast', 'event'].map(t => (
+            {['', 'news', 'podcast', 'event'].map(ft => (
               <button
-                key={t}
-                onClick={() => setTypeFilter(t)}
+                key={ft}
+                onClick={() => setTypeFilter(ft)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  typeFilter === t
+                  typeFilter === ft
                     ? 'bg-red-600 text-white'
                     : 'bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30'
                 }`}
               >
-                {t === '' ? 'Tất cả' : TYPE_LABELS[t]}
+                {ft === '' ? t.allNews.all : TYPE_LABELS[ft]}
               </button>
             ))}
           </div>
@@ -400,7 +402,7 @@ function AllNews() {
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-white/40 text-lg">Không tìm thấy bài viết nào</p>
+            <p className="text-white/40 text-lg">{t.allNews.noPosts}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -421,7 +423,7 @@ function AllNews() {
                         post.type === 'event' ? 'bg-blue-500/20 text-blue-400' :
                         'bg-green-500/20 text-green-400'
                       }`}>
-                        {TYPE_LABELS[post.type] || 'Tin tức'}
+                        {TYPE_LABELS[post.type] || t.allNews.newsLabel}
                       </span>
                       <span className="text-white/30 text-xs">{formatDate(post.created_at)}</span>
                     </div>
@@ -478,7 +480,7 @@ function AllNews() {
               disabled={meta.page <= 1}
               className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              Trước
+              {t.allNews.prev}
             </button>
             {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(p => (
               <button key={p} onClick={() => fetchPosts(p)}
@@ -493,7 +495,7 @@ function AllNews() {
               disabled={meta.page >= meta.totalPages}
               className="px-3 py-1.5 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              Sau
+              {t.allNews.next}
             </button>
           </div>
         )}

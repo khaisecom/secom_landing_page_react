@@ -216,13 +216,6 @@ function BoardOfDirector() {
           <MobileGrid t={t} />
         </div>
 
-        {/* Bottom badge */}
-        <div className="flex justify-center mt-6 md:mt-2">
-          <span className="inline-block px-5 py-1.5 bg-[#FF0137] text-white
-                           text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-            {t.board.badge}
-          </span>
-        </div>
 
       </div>
     </section>

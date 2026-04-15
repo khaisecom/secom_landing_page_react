@@ -2,6 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import contactBanner from '../../assets/images/contact-banner.jpg'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 const API_URL = 'http://localhost:3000/api'
 
@@ -13,17 +14,18 @@ function Contact() {
     message: '',
   })
   const [sending, setSending] = useState(false)
+  const { t } = useLanguage()
 
   const handleSubmit = async () => {
-    if (!form.customer_name.trim()) return toast.error('Vui lòng nhập tên')
-    if (!form.email.trim()) return toast.error('Vui lòng nhập email')
+    if (!form.customer_name.trim()) return toast.error(t.contact.requireName)
+    if (!form.email.trim()) return toast.error(t.contact.requireEmail)
     setSending(true)
     try {
       await axios.post(`${API_URL}/contacts`, form)
-      toast.success('Gửi liên hệ thành công!')
+      toast.success(t.contact.success)
       setForm({ customer_name: '', email: '', contact_method: '', message: '' })
     } catch {
-      toast.error('Gửi thất bại, vui lòng thử lại')
+      toast.error(t.contact.failSend)
     } finally {
       setSending(false)
     }
@@ -49,27 +51,27 @@ function Contact() {
       {/* Contact Form */}
       <section className="max-w-4xl mx-auto px-4 md:px-6 -mt-10 relative z-10 pb-16">
         <h1 className="text-2xl md:text-3xl font-bold text-white text-center uppercase mb-8">
-          Liên hệ với chúng tôi
+          {t.contact.title}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <input
             value={form.customer_name}
             onChange={e => setForm({ ...form, customer_name: e.target.value })}
-            placeholder="Tên của bạn"
+            placeholder={t.contact.name}
             className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
           />
           <input
             value={form.email}
             onChange={e => setForm({ ...form, email: e.target.value })}
             type="email"
-            placeholder="Email"
+            placeholder={t.contact.email}
             className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
           />
           <input
             value={form.contact_method}
             onChange={e => setForm({ ...form, contact_method: e.target.value })}
-            placeholder="Số điện thoại"
+            placeholder={t.contact.phone}
             className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
           />
         </div>
@@ -77,7 +79,7 @@ function Contact() {
           value={form.message}
           onChange={e => setForm({ ...form, message: e.target.value })}
           rows={4}
-          placeholder="Lời nhắn"
+          placeholder={t.contact.message}
           className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors resize-y mb-6"
         />
         <div className="text-center">
@@ -86,7 +88,7 @@ function Contact() {
             disabled={sending}
             className="px-10 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
           >
-            {sending ? 'Đang gửi...' : 'Gửi'}
+            {sending ? t.contact.sending : t.contact.send}
           </button>
         </div>
       </section>
@@ -94,7 +96,7 @@ function Contact() {
       {/* Company Info */}
       <section className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-16">
         <h2 className="text-2xl md:text-3xl font-bold text-white text-center uppercase mb-10">
-          Công ty TNHH <br className="md:hidden" />Dịch vụ SECOM
+          {t.contact.companyName}
         </h2>
 
         {/* Contact icons */}
@@ -142,7 +144,7 @@ function Contact() {
             />
           </div>
           <div className="flex flex-col justify-center">
-            <h3 className="text-xl font-semibold text-white mb-4">Địa chỉ</h3>
+            <h3 className="text-xl font-semibold text-white mb-4">{t.contact.addressLabel}</h3>
             <div className="flex items-start gap-3">
               <div className="mt-0.5 shrink-0">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0137">
@@ -150,7 +152,7 @@ function Contact() {
                 </svg>
               </div>
               <p className="text-white/70 text-sm leading-relaxed m-0">
-                Tòa nhà XL Building, 167 Trần Não, Phường An Khánh, Thành phố Hồ Chí Minh
+                {t.contact.address}
               </p>
             </div>
           </div>

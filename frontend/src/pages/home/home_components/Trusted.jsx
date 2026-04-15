@@ -60,12 +60,12 @@ function TestimonialCard({ t, idx, active }) {
           boxShadow: isActive ? '0 8px 40px rgba(255,1,55,0.18)' : 'none',
         }}
       >
-        {/* Running red line */}
-        <svg className="border-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
-          <rect
-            x="0.5" y="0.5" width="99" height="99" rx="8"
+        {/* Running red line — uses a path that skips the top-center where the avatar sits */}
+        <svg className="border-line-svg" viewBox="0 0 200 200" preserveAspectRatio="none" fill="none">
+          <path
+            d="M 115 1 L 192 1 Q 199 1 199 8 L 199 192 Q 199 199 192 199 L 8 199 Q 1 199 1 192 L 1 8 Q 1 1 8 1 L 85 1"
             stroke="rgba(255, 1, 55, 0.4)"
-            strokeWidth="1"
+            strokeWidth="1.5"
             pathLength="100"
             strokeDasharray="8 92"
             strokeDashoffset="0"

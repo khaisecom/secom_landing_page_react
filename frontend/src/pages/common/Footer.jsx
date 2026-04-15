@@ -27,7 +27,7 @@ const NAV_LINKS = [
 ]
 
 function Footer() {
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const [email, setEmail] = useState('')
   const isEn = lang === 'en'
 
@@ -55,9 +55,7 @@ function Footer() {
           <div className="flex flex-col gap-4">
             <img src={secomLogo} alt="SECOM" className="h-8 w-auto self-start" />
             <p className="text-white/40 text-sm leading-relaxed max-w-xs m-0">
-              {isEn
-                ? 'SECOM is an outstanding enterprise in Vietnam with comprehensive benefits and a clear career development path in cross-border e-commerce.'
-                : 'SECOM là doanh nghiệp xuất sắc tại Việt Nam với chính sách đãi ngộ toàn diện và lộ trình phát triển rõ ràng trong lĩnh vực thương mại điện tử xuyên biên giới.'}
+              {t.footer.description}
             </p>
             {/* Social icons */}
             <div className="flex items-center gap-3 mt-1">
@@ -79,7 +77,7 @@ function Footer() {
           {/* Navigation */}
           <div className="flex flex-col gap-3">
             <h4 className="text-white font-semibold text-sm tracking-wide m-0 mb-1">
-              {isEn ? 'Categories' : 'Danh mục'}
+              {t.footer.categories}
             </h4>
             <div className="flex flex-col gap-2.5">
               {NAV_LINKS.map(link => (
@@ -102,7 +100,7 @@ function Footer() {
           {/* Contact info */}
           <div className="flex flex-col gap-3">
             <h4 className="text-white font-semibold text-sm tracking-wide m-0 mb-1">
-              {isEn ? 'SECOM Service Ltd Company' : 'Công ty TNHH dịch vụ SECOM'}
+              {t.footer.contact}
             </h4>
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-2 text-white/45 text-sm">
@@ -115,9 +113,7 @@ function Footer() {
               </div>
               <div className="flex items-start gap-2 text-white/45 text-sm">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span>{isEn
-                  ? 'XL Building, 167 Tran Nao, An Khanh Ward, Ho Chi Minh City'
-                  : 'Tòa nhà XL Building, 167 Trần Não, Phường An Khánh, Thành phố Hồ Chí Minh'}</span>
+                <span>{t.footer.address}</span>
               </div>
             </div>
 
@@ -127,7 +123,7 @@ function Footer() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder={isEn ? 'Your email (*)' : 'Email của bạn (*)'}
+                placeholder={t.footer.emailPlaceholder}
                 required
                 className="flex-1 px-3 py-2 rounded-l-lg bg-white/5 border border-white/10 border-r-0 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
               />

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
 import secomS from '../../../assets/images/secome_center_S_character.svg'
 import './CoreValue.css'
@@ -46,6 +47,7 @@ function ValueCard({ number, title, desc, nodePosition, gradientDir }) {
 /* ── Section ────────────────────────────────────────────────── */
 function CoreValue() {
   const { t } = useLanguage()
+  const [openIndex, setOpenIndex] = useState(0)
   const values = t.coreValue.values
 
   /* Center point of the pentagon layout (px) */
@@ -132,11 +134,32 @@ function CoreValue() {
           </div>
         </div>
 
-        {/* ── Mobile / Tablet layout — flex wrap ── */}
-        <div className="lg:hidden flex flex-wrap gap-4">
+        {/* ── Mobile / Tablet layout — collapsible ── */}
+        <div className="lg:hidden flex flex-col gap-2">
           {values.map((value, i) => (
-            <div key={i} className="w-full sm:w-[calc(50%-8px)]">
-              <ValueCard number={i + 1} title={value.title} desc={value.desc} gradientDir="to top" />
+            <div key={i} className="rounded-xl border border-white/10 overflow-hidden"
+                 style={{ background: 'linear-gradient(to top, #2a0a0f, #140000 40%, #0c0c0c 100%)' }}>
+              <button
+                onClick={() => setOpenIndex(openIndex === i ? -1 : i)}
+                className="w-full flex items-center gap-3 px-4 py-4 text-left"
+              >
+                <div className="w-8 h-8 rounded-full shrink-0 border border-red-500/60 flex items-center justify-center"
+                     style={{ background: 'radial-gradient(circle, #1a0008 0%, #000 70%)', boxShadow: '0 0 10px rgba(255,1,55,0.3)' }}>
+                  <span className="text-white font-bold text-xs">{i + 1}</span>
+                </div>
+                <span className="text-white font-semibold text-sm flex-1">{value.title}</span>
+                <svg
+                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className={`shrink-0 transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div className={`overflow-hidden transition-all duration-300 ${openIndex === i ? 'max-h-40 pb-4' : 'max-h-0'}`}>
+                <p className="text-white/50 text-xs leading-relaxed m-0 px-4 pl-15">
+                  {value.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>

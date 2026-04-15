@@ -56,7 +56,7 @@ function formatDateInput(dateStr) {
 }
 
 // ── Modal Form ──
-function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
+function JobModal({ isOpen, onClose, onSave, job, attributes, isEn, t }) {
   const [form, setForm] = useState({
     title: '', title_en: '', description: '',
     vacancies: 1, locations: 'HCM', deadline: '',
@@ -113,7 +113,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.title.trim()) return toast.error('Title is required')
+    if (!form.title.trim()) return toast.error(t.admin.titleRequired)
     setSaving(true)
     try {
       await onSave({
@@ -124,7 +124,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
       })
       onClose()
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed to save')
+      toast.error(err?.response?.data?.message || t.admin.saveFail)
     } finally {
       setSaving(false)
     }
@@ -134,7 +134,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
     <div className="fixed inset-0 z-50 overflow-y-auto overscroll-none" onClick={onClose}>
       <div className="min-h-full flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl p-6" onClick={e => e.stopPropagation()}>
-        <h3 className="text-lg font-bold mb-5">{job ? 'Edit Position' : 'New Position'}</h3>
+        <h3 className="text-lg font-bold mb-5">{job ? t.admin.editPost : t.admin.newPost}</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -238,7 +238,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
                   <div className="relative">
                     <button type="button" onClick={() => {
                       navigator.clipboard.writeText(TEMPLATE_HTML)
-                      toast.success('Template copied!')
+                      toast.success(t.admin.copiedTemplate)
                     }}
                       className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 text-[10px] text-white/50 hover:bg-white/20 hover:text-white transition-colors">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -276,11 +276,11 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose}
               className="px-5 py-2 rounded-lg border border-white/10 text-sm text-white/60 hover:bg-white/5 transition-colors">
-              Cancel
+              {t.admin.cancel}
             </button>
             <button type="submit" disabled={saving}
               className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors disabled:opacity-50">
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? t.admin.saving : t.admin.save}
             </button>
           </div>
         </form>
@@ -292,7 +292,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
 
 // ── Main Page ──
 export default function RecruitmentPage() {
-  const { lang } = useLanguage()
+  const { lang, t } = useLanguage()
   const { user } = useSelector((state) => state.auth)
   const isAdmin = user?.role === 'ROLE_ADMIN'
   const [jobs, setJobs] = useState([])
@@ -360,17 +360,17 @@ export default function RecruitmentPage() {
       setEditingJob(res.data)
       setModalOpen(true)
     } catch {
-      toast.error('Failed to load job details')
+      toast.error(t.admin.saveFail)
     }
   }
 
   const handleSave = async (form) => {
     if (editingJob) {
       await axios.put(`${API_URL}/${editingJob.id}`, form, { withCredentials: true })
-      toast.success('Position updated')
+      toast.success(t.admin.updateSuccess)
     } else {
       await axios.post(API_URL, form, { withCredentials: true })
-      toast.success('Position created')
+      toast.success(t.admin.createSuccess)
     }
     fetchJobs(meta.page)
   }
@@ -379,10 +379,10 @@ export default function RecruitmentPage() {
     if (!deleteId) return
     try {
       await axios.delete(`${API_URL}/${deleteId}`, { withCredentials: true })
-      toast.success('Position deleted')
+      toast.success(t.admin.deleteSuccess)
       fetchJobs(meta.page)
     } catch {
-      toast.error('Failed to delete')
+      toast.error(t.admin.deleteFail)
     } finally {
       setDeleteId(null)
     }
@@ -407,6 +407,7 @@ export default function RecruitmentPage() {
         job={editingJob}
         attributes={attributes}
         isEn={isEn}
+        t={t}
       />
 
       {/* Delete confirmation modal */}

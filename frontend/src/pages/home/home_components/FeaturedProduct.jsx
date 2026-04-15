@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
-import { useScrollReveal } from '../../../hooks/useScrollReveal'
+
 import hoodieImg from '../../../assets/images/products/hoodie.png'
 import pajamasImg from '../../../assets/images/products/pajamas.png'
 import sweaterImg from '../../../assets/images/products/sweater.png'
@@ -18,10 +18,10 @@ const DOTS = 3
 function ProductCard({ product, t }) {
   const displayName = t.featuredProduct.products[product.nameKey]
   return (
-    <div className="relative pt-4 product-float">
+    <div className="relative pt-4 group cursor-pointer">
       {/* Label pill — sits half outside the card */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 top-0 z-10 w-3/4 py-2 rounded-xl border border-white/10 border-t-red-600/60 flex items-center justify-center"
+        className="absolute left-1/2 -translate-x-1/2 top-0 z-10 w-3/4 py-2 rounded-xl border border-white/10 border-t-red-600/60 flex items-center justify-center transition-all duration-300 group-hover:border-red-600/80 group-hover:shadow-[0_0_15px_rgba(255,1,55,0.3)]"
         style={{ background: '#0d0507' }}
       >
         <span className="text-white font-semibold text-sm tracking-wide whitespace-nowrap">
@@ -31,13 +31,13 @@ function ProductCard({ product, t }) {
 
       {/* Card body */}
       <div
-        className="product-shadow rounded-2xl flex items-center justify-center px-3 pb-5 pt-6"
+        className="rounded-2xl flex items-center justify-center px-3 pb-5 pt-6 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(255,1,55,0.15)]"
         style={{ background: '#1a0c10' }}
       >
         <img
           src={product.img}
           alt={displayName}
-          className="w-full object-contain"
+          className="w-full object-contain transition-transform duration-300 group-hover:scale-105"
           style={{ height: 'clamp(200px, 20vw, 300px)' }}
         />
       </div>
@@ -94,14 +94,12 @@ function FeaturedProduct() {
     return () => clearInterval(timer)
   }, [isTransitioning])
 
-  const [sectionRef, sectionVisible] = useScrollReveal(0.1)
-
   return (
-    <section ref={sectionRef} className="bg-[#0c0c0c] pt-8 pb-20 md:pt-14 md:pb-24">
+    <section className="bg-[#0c0c0c] pt-8 pb-20 md:pt-14 md:pb-24">
       <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* ── Header ── */}
-        <div className={`mb-8 md:mb-10 flex flex-col items-center text-center px-2 md:px-0 reveal ${sectionVisible ? 'visible' : ''}`}>
+        <div className="mb-8 md:mb-10 flex flex-col items-center text-center px-2 md:px-0">
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
             {t.featuredProduct.badge}
