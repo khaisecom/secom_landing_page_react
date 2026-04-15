@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
+import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import avatar1 from '../../../assets/images/fake_avatar/avatar_1.avif'
 import avatar2 from '../../../assets/images/fake_avatar/avatar_2.avif'
 import avatar3 from '../../../assets/images/fake_avatar/avatar_3.jpg'
@@ -21,7 +22,7 @@ function TestimonialCard({ t, idx, active }) {
     <div
       className="relative flex flex-col items-center transition-all duration-500"
       style={{
-        paddingTop: '40px',
+        paddingTop: '30px',
         width: '100%',
         opacity: isActive ? 1 : 0.55,
         transform: isActive ? 'scale(1)' : 'scale(0.93)',
@@ -34,7 +35,7 @@ function TestimonialCard({ t, idx, active }) {
         style={{ top: 0, left: '50%', transform: 'translate(-50%, 0)' }}
       >
         <div
-          className="w-20 h-20 rounded-full overflow-hidden shrink-0"
+          className="w-14 h-14 rounded-full overflow-hidden shrink-0"
           style={{
             boxShadow: isActive
               ? '0 0 0 3px rgba(255,255,255,0.85), 0 0 28px rgba(255,1,55,0.55)'
@@ -47,36 +48,49 @@ function TestimonialCard({ t, idx, active }) {
 
       {/* Card body */}
       <div
-        className="w-full rounded-2xl px-6 pb-6 flex flex-col items-center text-center"
+        className="w-full rounded-xl px-4 pb-4 flex flex-col items-center text-center card-border-run"
         style={{
-          paddingTop: '52px',
+          paddingTop: '36px',
           background: isActive
             ? 'linear-gradient(160deg, rgba(255,1,55,0.22) 0%, #1a0c10 45%, #0e0508 100%)'
             : '#140a0d',
           border: isActive
-            ? '1px solid rgba(255,1,55,0.38)'
+            ? '1px solid rgba(255,255,255,0.07)'
             : '1px solid rgba(255,255,255,0.07)',
           boxShadow: isActive ? '0 8px 40px rgba(255,1,55,0.18)' : 'none',
         }}
       >
+        {/* Running red line */}
+        <svg className="border-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
+          <rect
+            x="0.5" y="0.5" width="99" height="99" rx="8"
+            stroke="rgba(255, 1, 55, 0.4)"
+            strokeWidth="1"
+            pathLength="100"
+            strokeDasharray="8 92"
+            strokeDashoffset="0"
+            strokeLinecap="round"
+            style={{ animation: 'dash-run 3s linear infinite' }}
+          />
+        </svg>
         {/* Quote mark */}
         <div
-          className="mb-3 text-4xl font-serif leading-none select-none"
+          className="mb-2 text-2xl font-serif leading-none select-none"
           style={{ color: isActive ? 'rgba(255,1,55,0.55)' : 'rgba(255,255,255,0.12)' }}
         >
           "
         </div>
 
         <p
-          className="text-white/65 leading-relaxed mb-5"
-          style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}
+          className="text-white/65 leading-relaxed mb-3"
+          style={{ fontSize: 'clamp(10px, 0.9vw, 12px)' }}
         >
           {t.quote}
         </p>
 
         {/* Divider */}
         <div
-          className="w-10 h-px mb-4"
+          className="w-8 h-px mb-3"
           style={{
             background: isActive ? 'rgba(255,1,55,0.55)' : 'rgba(255,255,255,0.12)',
           }}
@@ -121,12 +135,14 @@ function Trusted() {
     (active + 1) % total,
   ]
 
+  const [sectionRef, sectionVisible] = useScrollReveal(0.1)
+
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <section ref={sectionRef} className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-14">
+        <div className={`flex flex-col items-center text-center mb-14 reveal ${sectionVisible ? 'visible' : ''}`}>
           <span className="inline-block mb-5 px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
             {t.trusted.badge}
@@ -147,7 +163,7 @@ function Trusted() {
         {/* Carousel — 3 cards visible */}
         <div className="relative">
           {/* Cards grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-start max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start max-w-3xl mx-auto">
             {indices.map((tIdx, slotIdx) => (
               <TestimonialCard
                 key={tIdx}

@@ -1,0 +1,114 @@
+/* ── Scroll reveal base ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Stagger delays ── */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* ── Product float / levitate ── */
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+.product-float {
+  animation: float 3s ease-in-out infinite;
+}
+.product-float:nth-child(2) { animation-delay: 0.4s; }
+.product-float:nth-child(3) { animation-delay: 0.8s; }
+.product-float:nth-child(4) { animation-delay: 1.2s; }
+
+/* ── Product shadow pulse ── */
+@keyframes shadow-pulse {
+  0%   { box-shadow: 0 8px 20px rgba(255,1,55,0.1); }
+  50%  { box-shadow: 0 16px 40px rgba(255,1,55,0.25); }
+  100% { box-shadow: 0 8px 20px rgba(255,1,55,0.1); }
+}
+
+.product-float .product-shadow {
+  animation: shadow-pulse 3s ease-in-out infinite;
+}
+
+/* ── Director glow on hover ── */
+@keyframes glow-pulse {
+  0%   { box-shadow: 0 0 0 2px rgba(255,255,255,0.35); }
+  50%  { box-shadow: 0 0 0 3px rgba(255,1,55,0.7), 0 0 24px rgba(255,1,55,0.5); }
+  100% { box-shadow: 0 0 0 2px rgba(255,255,255,0.35); }
+}
+
+.director-avatar:hover {
+  animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Testimonial running red line around card border ── */
+@keyframes dash-run {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+
+.card-border-run {
+  position: relative;
+}
+
+.card-border-run > .border-line-svg {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Logo bottom marquee ── */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.logo-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 20s linear infinite;
+}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
+import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import news1 from '../../../assets/images/focus/news-1.png'
 import news2 from '../../../assets/images/focus/news-2.png'
 import news3 from '../../../assets/images/focus/news-3.png'
@@ -118,26 +119,28 @@ function SecomFocus() {
     return () => clearInterval(timer)
   }, [isTransitioning])
 
+  const [sectionRef, sectionVisible] = useScrollReveal(0.1)
+
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <section ref={sectionRef} className="bg-[#0c0c0c] pt-8 pb-20 md:pt-14 md:pb-24">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* ── Header ── */}
-        <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
+        <div className={`mb-8 md:mb-10 flex flex-col items-center text-center px-2 md:px-0 reveal ${sectionVisible ? 'visible' : ''}`}>
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
             {t.secomFocus.badge}
           </span>
 
           <h2
-            className="text-white font-bold m-0 mb-3 leading-tight"
+            className="text-white font-bold m-0 mb-3 leading-tight py-3"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
             {t.secomFocus.title}
           </h2>
 
           <p
-            className="text-white/80 italic mb-2"
+            className="text-white/80 italic mb-6"
             style={{ fontSize: 'clamp(13px, 1.2vw, 16px)' }}
           >
             {t.secomFocus.quote}

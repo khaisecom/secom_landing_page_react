@@ -69,7 +69,7 @@ function StatCard({ stat, triggered, gradient, className = '' }) {
       ) : (
         <span
           className="text-white font-bold leading-none"
-          style={{ fontSize: 'clamp(26px, 3vw, 48px)' }}
+          style={{ fontSize: 'clamp(20px, 3vw, 48px)' }}
         >
           {stat.format(count)}
         </span>
@@ -124,7 +124,7 @@ function Hero() {
     >
       {/* ── Layer 1 : Stars (desktop only, hidden on small screens) ── */}
       <div
-        className="absolute inset-0 pointer-events-none hidden sm:block"
+        className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 1 }}
         aria-hidden="true"
       >
@@ -144,20 +144,20 @@ function Hero() {
         aria-hidden="true"
       >
         <div className="hero-planet-wrap">
-          <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill', opacity: 0.6 }} />
+          <img src={topRedSun} alt="" className="w-full h-full block sun-flicker" style={{ objectFit: 'fill' }} />
         </div>
       </div>
 
       {/* ── Layer 3 : Main content ── */}
       <div
         className="relative flex flex-col items-center text-center px-4
-                   min-h-[calc(100vh-4rem)]"
+                   h-[calc(100vh-4rem)] md:min-h-[calc(100vh-4rem)] md:h-auto"
         style={{ zIndex: 3 }}
       >
         {/* ── Top 40% : headline ── */}
         <div
-          className="w-full flex flex-col items-center justify-center gap-4 md:gap-5
-                     pt-10 md:pt-0 mb-10
+          className="w-full flex flex-col items-center justify-center gap-2 md:gap-5
+                     pt-4 md:pt-0 mb-0 md:mb-10
                      flex-2"
         >
           <Badge>{t.hero.badge1}</Badge>
@@ -171,11 +171,20 @@ function Hero() {
 
         {/* ── Mobile planet (sits between title and stats) ── */}
         <div
-          className="block md:hidden w-full pointer-events-none overflow-hidden"
+          className="flex md:hidden w-full pointer-events-none overflow-hidden -my-8 justify-center"
           aria-hidden="true"
         >
-          <div className="hero-planet-wrap">
-            <img src={topRedSun} alt="" className="w-full h-full block" style={{ objectFit: 'fill', opacity: 0.7 }} />
+          <div className="hero-planet-wrap" style={{ width: '140%', flexShrink: 0 }}>
+            <img
+              src={topRedSun}
+              alt=""
+              className="w-full h-full block sun-flicker"
+              style={{
+                objectFit: 'fill',
+                mask: 'radial-gradient(ellipse 70% 80% at 50% 40%, rgba(0,0,0,1) 30%, transparent 85%)',
+                WebkitMask: 'radial-gradient(ellipse 70% 80% at 50% 40%, rgba(0,0,0,1) 30%, transparent 85%)',
+              }}
+            />
           </div>
         </div>
 
@@ -183,29 +192,29 @@ function Hero() {
         <div
           ref={statsRef}
           className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center
-                     gap-3 md:gap-4 md:pb-6 mt-10
+                     gap-1 md:gap-4 md:pb-6 mt-0 md:mt-10
                      flex-3"
         >
-          <div className="mt-6 mb-2">
+          <div className="mt-0 md:mt-6 mb-0 md:mb-2">
             <Badge>{t.hero.badge2}</Badge>
           </div>
 
           <h2
-            className="text-white font-semibold m-0"
-            style={{ fontSize: 'clamp(20px, 2.4vw, 34px)' }}
+            className="text-white font-semibold m-0 px-2 py-4 md:py-5"
+            style={{ fontSize: 'clamp(16px, 2.4vw, 34px)' }}
           >
             {t.hero.subtitle}
           </h2>
 
           <p
-            className="text-white/50 m-0"
-            style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}
+            className="text-white/50 m-0 px-4"
+            style={{ fontSize: 'clamp(11px, 1.1vw, 15px)' }}
           >
             {t.hero.desc}
           </p>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 w-full mt-1">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4 w-full mt-1 pt-3 md:pt-4">
             {STATS.map((stat, i) => (
               <StatCard
                 key={i}
@@ -218,7 +227,7 @@ function Hero() {
           </div>
 
           {/* Explore More */}
-          <div className="w-full flex items-center justify-end gap-2 md:gap-3 mt-1 py-4 md:py-1 pr-2">
+          <div className="w-full flex items-center justify-end gap-2 md:gap-3 mt-auto pb-6 md:pb-1 pt-2 md:pt-1 pr-2">
             <span className="text-white/65 text-xs md:text-sm font-light tracking-wide">{t.hero.explore}</span>
             <button
               onClick={handleExplore}

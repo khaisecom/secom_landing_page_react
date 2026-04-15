@@ -1,4 +1,5 @@
 import { useLanguage } from '../../../i18n/LanguageContext'
+import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import ceoImg          from '../../../assets/images/directors/mac-vuong-bien.png'
 import vuDucDuongImg   from '../../../assets/images/directors/vu-duc-duong.png'
 import phanHuuThanhImg from '../../../assets/images/directors/phan-huu-thanh.png'
@@ -35,8 +36,8 @@ function Avatar({ img, name, title, large = false }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className={`rounded-full overflow-hidden shrink-0
-                    ${large ? 'w-28 h-28' : 'w-[72px] h-[72px]'}`}
+        className={`rounded-full overflow-hidden shrink-0 transition-all duration-300
+                    ${large ? 'w-28 h-28' : 'w-[72px] h-[72px] director-avatar'}`}
         style={{
           boxShadow: large
             ? '0 0 0 3px rgba(255,255,255,0.9), 0 0 36px rgba(255,80,80,0.75), 0 0 60px rgba(255,1,55,0.4)'
@@ -186,13 +187,14 @@ function MobileGrid({ t }) {
 /* ── Section ───────────────────────────────────────────────── */
 function BoardOfDirector() {
   const { t } = useLanguage()
+  const [sectionRef, sectionVisible] = useScrollReveal(0.1)
 
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <section ref={sectionRef} className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* Top badge + heading */}
-        <div className="flex flex-col items-center text-center mb-6">
+        <div className={`flex flex-col items-center text-center mb-6 reveal ${sectionVisible ? 'visible' : ''}`}>
           <span className="inline-block mb-5 px-5 py-1.5 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
             {t.board.badge}

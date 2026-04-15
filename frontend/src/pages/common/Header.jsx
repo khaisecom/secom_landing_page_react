@@ -40,6 +40,7 @@ function Header() {
 
   const handleLogout = async () => {
     await dispatch(logout())
+    setMenuOpen(false)
     navigate('/')
   }
 
@@ -76,20 +77,20 @@ function Header() {
           ))}
         </nav>
 
-        {/* Right side */}
-        <div className="flex items-center gap-3">
+        {/* Right side — desktop only */}
+        <div className="hidden md:flex items-center gap-3">
           {/* Logout button */}
           {!loading && user && (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-red-600/20 hover:border-red-600/40 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-red-600/20 hover:border-red-600/40 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                 <polyline points="16 17 21 12 16 7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
-              <span className="hidden md:inline">Logout</span>
+              <span>Logout</span>
             </button>
           )}
 
@@ -97,7 +98,7 @@ function Header() {
           <div className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-2 px-3 md:px-4 py-1.5 rounded-full border border-red-600/60 bg-red-950/40 hover:bg-red-900/50 transition-colors duration-200"
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-600/60 bg-red-950/40 hover:bg-red-900/50 transition-colors duration-200"
             >
               <span className="text-white font-semibold text-sm tracking-wider">{currentLang.label}</span>
               {currentLang.flag && (
@@ -109,7 +110,6 @@ function Header() {
               </svg>
             </button>
 
-            {/* Dropdown */}
             {langOpen && (
               <div className="absolute right-0 mt-2 w-32 rounded-lg border border-white/10 bg-[#1a1a1a] overflow-hidden shadow-xl">
                 {LANGUAGES.map(l => (
@@ -131,18 +131,18 @@ function Header() {
               </div>
             )}
           </div>
-
-          {/* Hamburger — mobile only */}
-          <button
-            className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-          </button>
         </div>
+
+        {/* Hamburger — mobile only */}
+        <button
+          className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+        </button>
 
       </div>
 
@@ -154,9 +154,9 @@ function Header() {
         />
       )}
 
-      {/* Mobile menu */}
+      {/* Mobile sidebar menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 bg-[#0e0e0e] border-t border-white/5 ${menuOpen ? 'max-h-96' : 'max-h-0'}`}
+        className={`md:hidden overflow-hidden transition-all duration-300 bg-[#0e0e0e] border-t border-white/5 ${menuOpen ? 'max-h-[500px]' : 'max-h-0'}`}
       >
         <nav className="flex flex-col px-6 py-4 gap-3">
           {NAV_KEYS.map(({ key, to }) => (
@@ -174,6 +174,49 @@ function Header() {
             </NavLink>
           ))}
         </nav>
+
+        {/* Divider */}
+        <div className="mx-6 border-t border-white/10" />
+
+        {/* Language selector in sidebar */}
+        <div className="px-6 py-4">
+          <p className="text-white/40 text-xs uppercase tracking-wider mb-3">Language</p>
+          <div className="flex gap-2">
+            {LANGUAGES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => { handleLangSelect(l.code); setMenuOpen(false) }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors duration-200
+                           ${lang === l.code
+                             ? 'bg-red-950/50 border border-red-600/60 text-white'
+                             : 'border border-white/10 text-white/60 hover:text-white hover:border-white/30'}`}
+              >
+                {l.flag && <img src={l.flag} alt="" className="h-3.5 w-auto rounded-sm" />}
+                <span>{l.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Logout in sidebar */}
+        {!loading && user && (
+          <>
+            <div className="mx-6 border-t border-white/10" />
+            <div className="px-6 py-4">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-600/40 bg-red-950/20 hover:bg-red-600/20 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Logout
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </header>
   )

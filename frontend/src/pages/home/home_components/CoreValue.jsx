@@ -52,22 +52,22 @@ function CoreValue() {
   const cy = 345
 
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <section className="bg-[#0c0c0c] pt-8 pb-20 md:pt-14 md:pb-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* ── Header ── */}
-        <div className="flex flex-col items-center text-center gap-3 mb-10 md:mb-16">
+        <div className="flex flex-col items-center text-center gap-3 mb-10 md:mb-16 px-2 md:px-0">
           <span className="inline-block px-4 py-1 text-[10px] font-semibold tracking-[0.18em]
                            text-white/90 uppercase border border-red-600/40 bg-red-950/25 rounded-full">
             {t.coreValue.badge}
           </span>
 
-          <h2 className="text-white font-semibold m-0"
+          <h2 className="text-white font-semibold m-0 py-3"
               style={{ fontSize: 'clamp(22px, 3vw, 40px)' }}>
             {t.coreValue.title}
           </h2>
 
-          <p className="text-white/60 m-0 max-w-lg italic"
+          <p className="text-white/60 m-0 max-w-lg italic mb-6"
              style={{ fontSize: 'clamp(12px, 1.1vw, 15px)' }}>
             {t.coreValue.quote}
           </p>

@@ -24,6 +24,12 @@ function Network() {
       className="relative bg-[#0c0c0c] overflow-hidden
                  h-[50vh] sm:h-[65vh] md:h-[80vh]"
     >
+      {/* ── Top gradient blend into Hero ── */}
+      <div
+        className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
+        style={{ height: '25%', background: 'linear-gradient(to bottom, #0c0c0c, transparent)' }}
+      />
+
       {/* ── Background : network visualization ── */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -67,7 +73,7 @@ function Network() {
       </div>
 
       {/* ── Infinite logo carousel — absolute so it sits ON the image ── */}
-      <div className="absolute bottom-8 md:bottom-10 left-0 right-0 z-10 px-6 md:px-10 lg:px-[12.5%]">
+      <div className="absolute bottom-8 md:bottom-10 left-0 right-0 z-10 px-4 md:px-10 lg:px-[12.5%]">
         <div className="overflow-hidden">
           <div className="carousel-track gap-4">
           {TRACK.map((logo, i) => (

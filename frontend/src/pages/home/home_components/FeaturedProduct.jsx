@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useLanguage } from '../../../i18n/LanguageContext'
+import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import hoodieImg from '../../../assets/images/products/hoodie.png'
 import pajamasImg from '../../../assets/images/products/pajamas.png'
 import sweaterImg from '../../../assets/images/products/sweater.png'
@@ -17,7 +18,7 @@ const DOTS = 3
 function ProductCard({ product, t }) {
   const displayName = t.featuredProduct.products[product.nameKey]
   return (
-    <div className="relative pt-4">
+    <div className="relative pt-4 product-float">
       {/* Label pill — sits half outside the card */}
       <div
         className="absolute left-1/2 -translate-x-1/2 top-0 z-10 w-3/4 py-2 rounded-xl border border-white/10 border-t-red-600/60 flex items-center justify-center"
@@ -30,7 +31,7 @@ function ProductCard({ product, t }) {
 
       {/* Card body */}
       <div
-        className="rounded-2xl flex items-center justify-center px-3 pb-5 pt-6"
+        className="product-shadow rounded-2xl flex items-center justify-center px-3 pb-5 pt-6"
         style={{ background: '#1a0c10' }}
       >
         <img
@@ -93,26 +94,28 @@ function FeaturedProduct() {
     return () => clearInterval(timer)
   }, [isTransitioning])
 
+  const [sectionRef, sectionVisible] = useScrollReveal(0.1)
+
   return (
-    <section className="bg-[#0c0c0c] py-14 md:py-20">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <section ref={sectionRef} className="bg-[#0c0c0c] pt-8 pb-20 md:pt-14 md:pb-24">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
 
         {/* ── Header ── */}
-        <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
+        <div className={`mb-8 md:mb-10 flex flex-col items-center text-center px-2 md:px-0 reveal ${sectionVisible ? 'visible' : ''}`}>
           <span className="inline-block mb-4 px-4 py-1 bg-[#FF0137] text-white
                            text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
             {t.featuredProduct.badge}
           </span>
 
           <h2
-            className="text-white font-bold m-0 mb-3 leading-tight"
+            className="text-white font-bold m-0 mb-3 leading-tight py-3"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
             {t.featuredProduct.title}
           </h2>
 
           <p
-            className="text-white/80 italic mb-2"
+            className="text-white/80 italic mb-6"
             style={{ fontSize: 'clamp(13px, 1.2vw, 16px)' }}
           >
             {t.featuredProduct.quote}
