@@ -32,7 +32,7 @@ function Network() {
         <img
           src={networkBg}
           alt=""
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+          className="network-bg-pulse absolute top-1/2 left-1/2
                      w-[140%] md:w-[130%] lg:w-3/4 h-auto object-contain"
           style={{
             opacity: 0.78,

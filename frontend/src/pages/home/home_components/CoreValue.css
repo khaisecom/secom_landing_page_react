@@ -1,0 +1,22 @@
+/* ── Center S logo flicker: scale small → big → small ── */
+@keyframes core-flicker {
+  0%   { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+  50%  { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+}
+
+@keyframes core-flicker-logo {
+  0%   { transform: scale(0.9);  opacity: 0.7; }
+  50%  { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(0.9);  opacity: 0.7; }
+}
+
+/* Single glow */
+.core-glow-inner {
+  animation: core-flicker 3s ease-in-out infinite;
+}
+
+/* S logo itself */
+.core-logo-flicker {
+  animation: core-flicker-logo 3s ease-in-out infinite;
+}

@@ -1,5 +1,6 @@
 import { useLanguage } from '../../../i18n/LanguageContext'
 import secomS from '../../../assets/images/secome_center_S_character.svg'
+import './CoreValue.css'
 
 /* ── Value Card — number node sits half-in half-out on the edge ── */
 function ValueCard({ number, title, desc, nodePosition, gradientDir }) {
@@ -22,10 +23,6 @@ function ValueCard({ number, title, desc, nodePosition, gradientDir }) {
   return (
     <div className="relative rounded-2xl border border-white/10 p-5 md:p-6 overflow-visible"
          style={{ background: gradients[gradientDir] || gradients['to top'] }}>
-      {/* Corner dots */}
-      <div className="absolute top-3 left-3 w-1.5 h-1.5 rounded-full border border-white/30" />
-      <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full border border-white/30" />
-
       {/* Title */}
       <h3 className="text-white font-semibold text-sm md:text-base mb-2">{title}</h3>
 
@@ -87,15 +84,11 @@ function CoreValue() {
           {/* Center circle with SECOM logo + red sun glow */}
           <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
                style={{ top: cy }}>
-            {/* Red sun glow layers */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(255,1,55,0.2) 0%, transparent 70%)' }} />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(255,1,55,0.4) 0%, transparent 65%)' }} />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(255,1,55,1) 0%, transparent 70%)' }} />
+            {/* Red sun glow — single layer, flickering */}
+            <div className="core-glow-inner absolute left-1/2 top-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+                 style={{ background: 'radial-gradient(circle, rgba(255,1,55,0.9) 0%, rgba(255,1,55,0.3) 35%, transparent 70%)' }} />
 
-            <img src={secomS} alt="SECOM" className="relative  object-contain z-10" />
+            <img src={secomS} alt="SECOM" className="core-logo-flicker relative object-contain z-10" />
           </div>
 
           {/* Connecting lines (SVG) — straight + 90° corners */}
