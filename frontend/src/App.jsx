@@ -9,6 +9,7 @@ import JobDetail from './pages/recruitment/JobDetail.jsx'
 import ManageCV from './pages/recruitment/ManageCV.jsx'
 import News from './pages/news/News.jsx'
 import Product from './pages/product/Product.jsx'
+import Services from './pages/services/Services.jsx'
 import Contact from './pages/contact/Contact.jsx'
 import AllNews from './pages/news/AllNews.jsx'
 import PostDetail from './pages/news/PostDetail.jsx'
@@ -32,6 +33,9 @@ function App() {
 
         {/* Product */}
         <Route path="/product" element={<Product />} />
+
+        {/* Services - SECOM Academy */}
+        <Route path="/services" element={<Services />} />
 
         {/* Recruitment */}
         <Route path="/recruitment" element={<RecruitmentPage />} />

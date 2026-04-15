@@ -191,7 +191,7 @@ function PostModal({ isOpen, onClose, onSave, post }) {
                 className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-mono placeholder-white/20 focus:outline-none focus:border-red-500 resize-y" />
 
               {tipsOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4 overflow-y-auto overscroll-contain" onClick={() => setTipsOpen(false)}>
+                <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60 px-4 overflow-y-auto overscroll-contain" onClick={() => setTipsOpen(false)}>
                   <div className="w-full max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
                     <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">

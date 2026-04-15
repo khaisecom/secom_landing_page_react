@@ -79,7 +79,7 @@ function Product() {
           alt="SECOM Products"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-[#111]" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/20 to-[#111]" />
       </div>
 
       {/* Title & Description */}

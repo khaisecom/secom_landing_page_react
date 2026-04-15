@@ -43,7 +43,7 @@ function Contact() {
           alt="Contact"
           className="w-full h-auto block"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#111]" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-[#111]" />
       </div>
 
       {/* Contact Form */}
