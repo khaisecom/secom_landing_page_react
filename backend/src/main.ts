@@ -9,8 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
+    origin: '*',
   });
   app.useStaticAssets(join(process.cwd(), 'upload'), { prefix: '/upload' });
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });

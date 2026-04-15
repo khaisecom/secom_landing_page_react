@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+
 import { useLanguage } from '../../i18n/LanguageContext'
 import secomLogo from '../../assets/images/secom_logo.png'
 
@@ -18,13 +18,6 @@ const SOCIALS = [
   )},
 ]
 
-const NAV_LINKS = [
-  { label: 'Sản phẩm', labelEn: 'Products', to: '/product' },
-  { label: 'SECOM - Academy', labelEn: 'SECOM - Academy', to: '/academy' },
-  { label: 'Tuyển dụng', labelEn: 'Recruitment', to: '/recruitment', badge: true },
-  { label: 'SECOM-News', labelEn: 'SECOM-News', to: '/news' },
-  { label: 'Liên hệ', labelEn: 'Contact', to: '/contact' },
-]
 
 function Footer() {
   const { lang, t } = useLanguage()
@@ -49,7 +42,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 pt-12 pb-8">
 
         {/* Top section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 mb-10">
 
           {/* Logo & description */}
           <div className="flex flex-col gap-4">
@@ -74,28 +67,6 @@ function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-white font-semibold text-sm tracking-wide m-0 mb-1">
-              {t.footer.categories}
-            </h4>
-            <div className="flex flex-col gap-2.5">
-              {NAV_LINKS.map(link => (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  className="text-white/45 text-sm hover:text-white transition-colors duration-200 flex items-center gap-2"
-                >
-                  {isEn ? link.labelEn : link.label}
-                  {link.badge && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">
-                      {isEn ? "we're hiring" : "we're hiring"}
-                    </span>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          </div>
 
           {/* Contact info */}
           <div className="flex flex-col gap-3">
