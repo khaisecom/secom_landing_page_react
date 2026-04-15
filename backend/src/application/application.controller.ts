@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
+import { mkdirSync } from 'fs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -31,7 +32,11 @@ export class ApplicationController {
   @UseInterceptors(
     FileInterceptor('cv', {
       storage: diskStorage({
-        destination: './secured',
+        destination: (_req, _file, cb) => {
+          const dir = join(process.env.ROOT_UPLOAD_DIR || './file_storage', 'secured');
+          mkdirSync(dir, { recursive: true });
+          cb(null, dir);
+        },
         filename: (_req, file, cb) => {
           const cleanName = file.originalname
             .replace(extname(file.originalname), '')

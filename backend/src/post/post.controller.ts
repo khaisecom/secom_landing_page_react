@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGua
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
-import { extname } from 'path';
+import { extname, join } from 'path';
+import { mkdirSync } from 'fs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -57,7 +58,11 @@ export class PostController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './upload',
+      destination: (_req, _file, cb) => {
+        const dir = join(process.env.ROOT_UPLOAD_DIR || './file_storage', 'upload');
+        mkdirSync(dir, { recursive: true });
+        cb(null, dir);
+      },
       filename: (_req, file, cb) => {
         const uuid = randomUUID();
         const ext = extname(file.originalname);

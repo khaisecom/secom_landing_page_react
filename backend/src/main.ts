@@ -9,11 +9,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: '*',
+    origin: true,
+    credentials: true,
   });
-  app.useStaticAssets(join(process.cwd(), 'upload'), { prefix: '/upload' });
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
-  app.useStaticAssets(join(process.cwd(), 'secured'), { prefix: '/secured' });
+  const rootDir = process.env.ROOT_UPLOAD_DIR || join(process.cwd(), 'file_storage');
+  app.useStaticAssets(join(rootDir, 'upload'), { prefix: '/upload' });
+  app.useStaticAssets(join(rootDir, 'secured'), { prefix: '/secured' });
   app.useStaticAssets(join(process.cwd(), 'images'), { prefix: '/images' });
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
