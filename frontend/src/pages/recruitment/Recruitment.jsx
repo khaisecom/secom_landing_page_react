@@ -286,6 +286,7 @@ function JobModal({ isOpen, onClose, onSave, job, attributes, isEn }) {
 export default function RecruitmentPage() {
   const { lang } = useLanguage()
   const { user } = useSelector((state) => state.auth)
+  const isAdmin = user?.role === 'ROLE_ADMIN'
   const [jobs, setJobs] = useState([])
   const [meta, setMeta] = useState({ total: 0, page: 1, totalPages: 1 })
   const [attributes, setAttributes] = useState({})
@@ -483,7 +484,7 @@ export default function RecruitmentPage() {
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors"
               />
             </div>
-            {user && (
+            {isAdmin && (
               <button onClick={handleCreate}
                 className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -562,7 +563,7 @@ export default function RecruitmentPage() {
                           <th className="px-4 py-3 text-center text-sm font-semibold text-white/80">{isEn ? 'Quantity' : 'Số lượng'}</th>
                           <th className="px-4 py-3 text-center text-sm font-semibold text-white/80">{isEn ? 'Location' : 'Nơi làm việc'}</th>
                           <th className="px-4 py-3 text-center text-sm font-semibold text-white/80">{isEn ? 'Deadline' : 'Hạn nộp'}</th>
-                          {user && <th className="px-4 py-3 text-center text-sm font-semibold text-white/80"></th>}
+                          {isAdmin && <th className="px-4 py-3 text-center text-sm font-semibold text-white/80"></th>}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
@@ -578,7 +579,7 @@ export default function RecruitmentPage() {
                             <td className="px-4 py-3 text-center text-sm text-white/70">{job.vacancies || '—'}</td>
                             <td className="px-4 py-3 text-center text-sm text-white/70">{job.locations || '—'}</td>
                             <td className="px-4 py-3 text-center text-sm text-white/70">{formatDate(job.deadline)}</td>
-                            {user && (
+                            {isAdmin && (
                               <td className="px-4 py-3 text-center">
                                 <div className="flex items-center justify-center gap-2">
                                   <button onClick={() => handleEdit(job.id)} title="Edit"
@@ -609,7 +610,7 @@ export default function RecruitmentPage() {
                       <div key={job.id} className="border border-white/10 rounded-xl overflow-hidden bg-white/5">
                         <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
                           <span className="text-sm font-semibold">{isEn ? (job.title_en || job.title) : job.title}</span>
-                          {user && (
+                          {isAdmin && (
                             <div className="flex items-center gap-1">
                               <button onClick={() => handleEdit(job.id)}
                                 className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">

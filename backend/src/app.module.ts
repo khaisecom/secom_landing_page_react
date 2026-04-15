@@ -5,6 +5,7 @@ import { AppService } from './app.service.js';
 import { ApplicationModule } from './application/application.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { JobModule } from './job/job.module.js';
+import { PostModule } from './post/post.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
@@ -13,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     PrismaModule,
     AuthModule,
     JobModule,
+    PostModule,
     ApplicationModule,
   ],
   controllers: [AppController],

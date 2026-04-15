@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../auth/guards/roles.guard.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 import { CreateJobDto } from './dto/create-job.dto.js';
 import { JobService } from './job.service.js';
 
@@ -34,19 +36,22 @@ export class JobController {
     return this.jobService.findOne(parseInt(id));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
   @Post()
   create(@Body() dto: CreateJobDto, @Request() req: any) {
     return this.jobService.create(dto, req.user.email);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: CreateJobDto, @Request() req: any) {
     return this.jobService.update(parseInt(id), dto, req.user.email);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ROLE_ADMIN')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.jobService.remove(parseInt(id));

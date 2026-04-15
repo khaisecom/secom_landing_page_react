@@ -6,7 +6,11 @@
       "Bash(npm install:*)",
       "Bash(npx nest:*)",
       "Bash(timeout 10 node dist/main.js)",
-      "Bash(timeout 10 node dist/src/main.js)"
+      "Bash(timeout 10 node dist/src/main.js)",
+      "Bash(xargs ls *)",
+      "Bash(npx tsc *)",
+      "Bash(ls -la e:/secom/secom_landing_page_react/frontend/src/assets/images/news_post_*)",
+      "Bash(node -e ' *)"
     ]
   }
 }
