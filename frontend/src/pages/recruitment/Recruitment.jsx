@@ -12,7 +12,9 @@ import recruitment4 from '../../assets/images/recruitment_4.webp'
 
 const RECRUITMENT_IMAGES = [recruitment1, recruitment2, recruitment3, recruitment4]
 
-const API_URL = 'http://localhost:3000/api/jobs'
+import { API_URL as BASE_API_URL } from '../../config/api'
+
+const API_URL = `${BASE_API_URL}/jobs`
 
 const TEMPLATE_HTML = `<h5><strong>TRÁCH NHIỆM / RESPONSIBILITIES:</strong></h5>
 <ul>

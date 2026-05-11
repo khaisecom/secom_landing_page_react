@@ -11,6 +11,6 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] })
   ],
   server: {
-    allowedHosts: ['trimness-rebuilt-emphases.ngrok-free.dev']
+    allowedHosts: true
   }
 })

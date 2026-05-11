@@ -4,7 +4,7 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import { useLanguage } from '../../i18n/LanguageContext'
 
-const API_URL = 'http://localhost:3000/api'
+import { API_URL } from '../../config/api'
 
 function stripStyles(html) {
   if (!html) return ''

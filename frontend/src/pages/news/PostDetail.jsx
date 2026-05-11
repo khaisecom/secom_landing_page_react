@@ -4,8 +4,7 @@ import axios from 'axios'
 import newsPost1 from '../../assets/images/news_post_1.png'
 import { useLanguage } from '../../i18n/LanguageContext'
 
-const API_URL = 'http://localhost:3000/api'
-const BACKEND_URL = 'http://localhost:3000'
+import { API_URL, BACKEND_URL } from '../../config/api'
 
 function resolveImage(path) {
   if (!path) return null

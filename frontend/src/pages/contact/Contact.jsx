@@ -4,7 +4,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import contactBanner from '../../assets/images/contact-banner.jpg'
 import { useLanguage } from '../../i18n/LanguageContext'
 
-const API_URL = 'http://localhost:3000/api'
+import { API_URL } from '../../config/api'
 
 function Contact() {
   const [form, setForm] = useState({

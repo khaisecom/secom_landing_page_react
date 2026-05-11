@@ -11,7 +11,7 @@ import newsPost1 from '../../assets/images/news_post_1.png'
 import newsPost2 from '../../assets/images/news_post_2.jpg'
 import newsPost3 from '../../assets/images/news_post_3.jpg'
 
-const API_URL = 'http://localhost:3000/api'
+import { API_URL, BACKEND_URL } from '../../config/api'
 
 const TEMPLATE_HTML = `<h3>Tiêu đề phần 1</h3>
 <p>Nội dung đoạn văn ở đây...</p>
@@ -34,7 +34,6 @@ const TEMPLATE_HTML = `<h3>Tiêu đề phần 1</h3>
 
 <h3>Kết luận</h3>
 <p>Nội dung kết luận...</p>`
-const BACKEND_URL = 'http://localhost:3000'
 
 function resolveImage(path) {
   if (!path) return null

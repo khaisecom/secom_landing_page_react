@@ -5,8 +5,7 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import { useLanguage } from '../../i18n/LanguageContext'
 
-const API_URL = 'http://localhost:3000/api'
-const BACKEND_URL = 'http://localhost:3000'
+import { API_URL, BACKEND_URL } from '../../config/api'
 
 function formatDate(dateStr) {
   if (!dateStr) return ''
